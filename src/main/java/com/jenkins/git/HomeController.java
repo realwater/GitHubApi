@@ -143,7 +143,7 @@ public class HomeController {
 	}
 	
 	@RequestMapping(value = "/auth.do", method = RequestMethod.GET)
-	public String auth(HttpServletRequest request, Model model) throws IOException {
+	public String auth(HttpServletRequest request, Model model) throws IOException { 
         HttpURLConnection httpUrlConnection = null;
 		BufferedReader bufferedReader = null;
 
