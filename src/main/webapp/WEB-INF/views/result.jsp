@@ -8,6 +8,6 @@
 				
 	</head>
 	<body>
-		${result}
+		<pre>${result}</pre>
 	</body>
 </html>

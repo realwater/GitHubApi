@@ -5,9 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -15,7 +13,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.json.simple.JSONArray;
+import org.apache.commons.codec.binary.Base64;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -147,9 +145,9 @@ public class HomeController {
 		model.addAttribute("result", result);
 		return "result";
 	}
-	
+
 	@RequestMapping(value = "/auth.do", method = RequestMethod.GET)
-	public String auth(HttpServletRequest request, Model model) throws IOException { 
+	public String auth(HttpServletRequest request, Model model) throws IOException {
         HttpURLConnection httpUrlConnection = null;
 		BufferedReader bufferedReader = null;
 
@@ -174,9 +172,9 @@ public class HomeController {
 		model.addAttribute("result", result);
 		return "result";
 	}
-	
+
 	@RequestMapping(value = "/sourceCont.do", method = RequestMethod.GET)
-	public String sourceCont(HttpServletRequest request, Model model) throws IOException, ParseException { 
+	public String sourceCont(HttpServletRequest request, Model model) throws IOException, ParseException {
         HttpURLConnection httpUrlConnection = null;
 		BufferedReader bufferedReader = null;
 
@@ -188,7 +186,7 @@ public class HomeController {
 		httpUrlConnection.setConnectTimeout(10000);
 		httpUrlConnection.setReadTimeout(10000);
 
-		bufferedReader = new BufferedReader(new InputStreamReader(httpUrlConnection.getInputStream(), "base64"));
+		bufferedReader = new BufferedReader(new InputStreamReader(httpUrlConnection.getInputStream(), "UTF-8"));
 
 		String result = "";
 		String resultBuffer = "";
@@ -196,16 +194,18 @@ public class HomeController {
 		while((resultBuffer = bufferedReader.readLine()) != null) {
 			result += resultBuffer;
 		}
-		
+
 		JSONParser parser = new JSONParser();
-		 
+
 		Object obj = parser.parse(result);
- 
+
 		JSONObject jsonObject = (JSONObject) obj;
- 
+
 		String source = (String) jsonObject.get("content");
-		
-		model.addAttribute("result", URLDecoder.decode(source, "UTF-8"));
+
+		byte[] decoded = Base64.decodeBase64(source);
+
+		model.addAttribute("result", new String(decoded));
 		return "result";
 	}
 
