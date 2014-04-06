@@ -178,7 +178,7 @@ public class HomeController {
         HttpURLConnection httpUrlConnection = null;
 		BufferedReader bufferedReader = null;
 
-	    URL targetUrl = new URL("https://api.github.com/repos/realwater/GitHubApiTest/contents/src/main/java/com/jenkins/git/HomeController.java");
+	    URL targetUrl = new URL("https://api.github.com/repos/realwater/GitHubApi/contents/src/main/java/com/jenkins/git/HomeController.java");
 		httpUrlConnection = (HttpURLConnection)targetUrl.openConnection();
 
 		httpUrlConnection.setRequestMethod("GET");
@@ -215,7 +215,7 @@ public class HomeController {
         HttpURLConnection httpUrlConnection = null;
 		BufferedReader bufferedReader = null;
 
-	    URL targetUrl = new URL("https://api.github.com/repos/realwater/GitHubApiTest/languages");
+	    URL targetUrl = new URL("https://api.github.com/repos/realwater/GitHubApi/languages");
 		httpUrlConnection = (HttpURLConnection)targetUrl.openConnection();
 
 		httpUrlConnection.setRequestMethod("GET");
