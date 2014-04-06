@@ -104,8 +104,8 @@ public class HomeController {
 
 		httpUrlConnection.setRequestMethod("GET");
 		httpUrlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-		httpUrlConnection.setConnectTimeout(10000);
-		httpUrlConnection.setReadTimeout(10000);
+		httpUrlConnection.setConnectTimeout(3000);
+		httpUrlConnection.setReadTimeout(3000);
 
 		bufferedReader = new BufferedReader(new InputStreamReader(httpUrlConnection.getInputStream(), "UTF-8"));
 
@@ -130,8 +130,8 @@ public class HomeController {
 
 		httpUrlConnection.setRequestMethod("GET");
 		httpUrlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-		httpUrlConnection.setConnectTimeout(10000);
-		httpUrlConnection.setReadTimeout(10000);
+		httpUrlConnection.setConnectTimeout(3000);
+		httpUrlConnection.setReadTimeout(3000);
 
 		bufferedReader = new BufferedReader(new InputStreamReader(httpUrlConnection.getInputStream(), "UTF-8"));
 
@@ -157,8 +157,8 @@ public class HomeController {
 		httpUrlConnection.setRequestProperty("Authorization", "token 89940784dcb430cf5197819135249f7c3ab036ea");
 		httpUrlConnection.setRequestMethod("GET");
 		httpUrlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-		httpUrlConnection.setConnectTimeout(10000);
-		httpUrlConnection.setReadTimeout(10000);
+		httpUrlConnection.setConnectTimeout(3000);
+		httpUrlConnection.setReadTimeout(3000);
 
 		bufferedReader = new BufferedReader(new InputStreamReader(httpUrlConnection.getInputStream(), "UTF-8"));
 
@@ -183,8 +183,8 @@ public class HomeController {
 
 		httpUrlConnection.setRequestMethod("GET");
 		httpUrlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-		httpUrlConnection.setConnectTimeout(10000);
-		httpUrlConnection.setReadTimeout(10000);
+		httpUrlConnection.setConnectTimeout(3000);
+		httpUrlConnection.setReadTimeout(3000);
 
 		bufferedReader = new BufferedReader(new InputStreamReader(httpUrlConnection.getInputStream(), "UTF-8"));
 
@@ -206,6 +206,33 @@ public class HomeController {
 		byte[] decoded = Base64.decodeBase64(source);
 
 		model.addAttribute("result", new String(decoded));
+		return "result";
+	}
+	
+	
+	@RequestMapping(value = "/projectLanguage.do", method = RequestMethod.GET)
+	public String projectLanguage(HttpServletRequest request, Model model) throws IOException, ParseException {
+        HttpURLConnection httpUrlConnection = null;
+		BufferedReader bufferedReader = null;
+
+	    URL targetUrl = new URL("https://api.github.com/repos/realwater/GitHubApiTest/languages");
+		httpUrlConnection = (HttpURLConnection)targetUrl.openConnection();
+
+		httpUrlConnection.setRequestMethod("GET");
+		httpUrlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+		httpUrlConnection.setConnectTimeout(3000);
+		httpUrlConnection.setReadTimeout(3000);
+
+		bufferedReader = new BufferedReader(new InputStreamReader(httpUrlConnection.getInputStream(), "UTF-8"));
+
+		String result = "";
+		String resultBuffer = "";
+
+		while((resultBuffer = bufferedReader.readLine()) != null) {
+			result += resultBuffer;
+		}
+
+		model.addAttribute("result", result);
 		return "result";
 	}
 

@@ -5,8 +5,18 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<head>
 		<title>Home</title>
-		<link rel="stylesheet" href="/js/lib/codemirror.css">
-		<script type="text/javascript" src="/js/lib/codemirror.js"></script>	
+		<link rel="stylesheet" href="/js/lib/codemirror/codemirror.css">
+		<script type="text/javascript" src="/js/lib/codemirror/codemirror.js"></script>	
+		<style>
+			.CodeMirror {
+			  border: 1px solid #eee;
+			  height: auto;
+			}
+			.CodeMirror-scroll {
+			  overflow-y: hidden;
+			  overflow-x: auto;
+			}
+		</style>
 	</head>
 	<body>
 		<textarea id="code" readonly>${result}</textarea>				
