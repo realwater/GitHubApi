@@ -1,4 +1,4 @@
-package com.jenkins.git;
+package com.github.api.controller;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,12 +13,10 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.codec.binary.Base64;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import org.springframework.expression.ParseException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -27,6 +25,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
  */
 @Controller
 public class HomeController {
+
+	/**
+	 * Simply selects the home view to render by returning its name.
+	 */
+	@RequestMapping(value = "/test", method = RequestMethod.GET)
+	public void login(Locale locale, ModelMap model) {
+		model.clear();
+		model.addAttribute("aa");
+	}
 
 	/**
 	 * Simply selects the home view to render by returning its name.
@@ -195,21 +202,21 @@ public class HomeController {
 			result += resultBuffer;
 		}
 
-		JSONParser parser = new JSONParser();
+//		JSONParser parser = new JSONParser();
+//
+//		Object obj = parser.parse(result);
+//
+//		JSONObject jsonObject = (JSONObject) obj;
+//
+//		String source = (String) jsonObject.get("content");
+//
+//		byte[] decoded = Base64.decodeBase64(source);
 
-		Object obj = parser.parse(result);
-
-		JSONObject jsonObject = (JSONObject) obj;
-
-		String source = (String) jsonObject.get("content");
-
-		byte[] decoded = Base64.decodeBase64(source);
-
-		model.addAttribute("result", new String(decoded));
+		//model.addAttribute("result", new String(decoded));
 		return "result";
 	}
-	
-	
+
+
 	@RequestMapping(value = "/projectLanguage.do", method = RequestMethod.GET)
 	public String projectLanguage(HttpServletRequest request, Model model) throws IOException, ParseException {
         HttpURLConnection httpUrlConnection = null;

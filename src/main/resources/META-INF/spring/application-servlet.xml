@@ -1,24 +1,79 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+<beans xmlns:mvc="http://www.springframework.org/schema/mvc"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns="http://www.springframework.org/schema/beans"
 	xmlns:context="http://www.springframework.org/schema/context"
-	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
-		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
-
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.1.xsd">	
+	
 	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
 	
 	<!-- Enables the Spring MVC @Controller programming model -->	
-	<context:annotation-config />
-	<annotation-driven />
-	<context:component-scan base-package="com.jenkins.git" />
+	<mvc:annotation-driven />
 	
-	<!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
-	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-		<beans:property name="prefix" value="/WEB-INF/views/" />
-		<beans:property name="suffix" value=".jsp" />
-	</beans:bean>
+	<!-- annotation 기반 스프링 빈 등록 컴포넌트 스캔 -->
+	<context:component-scan base-package="com.github.api.controller" />
+		
+	<!-- View Negotiating 설정  -->
+	<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">		
+		<!-- Request의 Accept 헤더 값 사용 유무 false 일 경우 사용 -->		
+		<property name="ignoreAcceptHeader" value="true" />
+		<!-- 기본 맵핑 Media Type 설정 default:XML -->
+		<property name="defaultContentType" value="application/json" />
+		
+		<!-- 미디어 타입 설정 -->
+		<property name="mediaTypes">
+			<map>
+				<entry key="html" value="text/html" />
+				<entry key="json" value="application/json" />
+				<entry key="xml" value="application/xml" />	
+			</map>
+		</property>		
+		
+		<property name="defaultViews">
+			<list>
+				<ref bean="jsonView"/>
+				<ref bean="xmlView"/>
+			</list>
+		</property>
+		
+		<property name="viewResolvers">
+			<list>
+				<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+					<property name="prefix" value="/WEB-INF/views/" />
+					<property name="suffix" value=".jsp" />
+					<property name="contentType" value="text/html; charset=UTF-8"></property>
+				</bean>		
+			</list>
+		</property>
+	</bean>
 	
+	<!-- JSON View Bean -->
+	<bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJacksonJsonView" >
+		<property name="extractValueFromSingleKeyModel" value="true"/>
+	</bean>
+	 
+	<!-- XML View Bean -->
+	<bean id="xmlView" class="org.springframework.web.servlet.view.xml.MarshallingView">
+		<property name="marshaller" ref="xstreamMarshaller" />
+	</bean>
 	
-</beans:beans>
+	<!-- XStream 마쉘링 빈 객체 생성  -->
+	<bean id="xstreamMarshaller" class="org.springframework.oxm.xstream.XStreamMarshaller">
+		<!-- 자동 어노테이션 감지 유무 -->
+		<property name="autodetectAnnotations" value="true" />		
+	</bean>	
+	
+	<!-- swagger 컨트롤러 싱글톤 : API DOC 을 자동생성한다.-->
+	<context:component-scan base-package="com.mangofactory.swagger.spring.controller" use-default-filters="false">
+	    <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+	</context:component-scan>
+	<bean id="swaggerConfiguration" class="com.mangofactory.swagger.SwaggerConfiguration">
+	    <property name="basePath" value="/"/>
+	    <property name="apiVersion" value="0.1"/>
+	</bean>
+	
+</beans>

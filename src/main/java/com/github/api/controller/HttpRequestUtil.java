@@ -1,4 +1,4 @@
-package com.jenkins.git;
+package com.github.api.controller;
 
 import java.io.BufferedReader;
 import java.io.IOException;

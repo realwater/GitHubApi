@@ -3,7 +3,23 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
+	<!-- 기본 인코딩 필터 설정 -->
+  	<filter>
+	  <filter-name>encodingFilter</filter-name>
+	  <filter-class>
+		org.springframework.web.filter.CharacterEncodingFilter
+	  </filter-class>
+	  <init-param>
+	    <param-name>encoding</param-name>
+	    <param-value>UTF-8</param-value>
+	  </init-param>
+	</filter>
 
+	<filter-mapping>
+	   <filter-name>encodingFilter</filter-name>
+	   <url-pattern>/*</url-pattern>
+	</filter-mapping>	
+	
 	<!-- Creates the Spring Container shared by all Servlets and Filters -->
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
@@ -27,7 +43,7 @@
 		
 	<servlet-mapping>
 		<servlet-name>appServlet</servlet-name>
-		<url-pattern>/*</url-pattern>
+		<url-pattern>/</url-pattern>
 	</servlet-mapping>
 
 </web-app>
