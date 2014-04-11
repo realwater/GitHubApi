@@ -13,6 +13,9 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.codec.binary.Base64;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.expression.ParseException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -181,11 +184,11 @@ public class HomeController {
 	}
 
 	@RequestMapping(value = "/sourceCont.do", method = RequestMethod.GET)
-	public String sourceCont(HttpServletRequest request, Model model) throws IOException, ParseException {
+	public String sourceCont(HttpServletRequest request, Model model) throws IOException, ParseException, org.json.simple.parser.ParseException {
         HttpURLConnection httpUrlConnection = null;
 		BufferedReader bufferedReader = null;
 
-	    URL targetUrl = new URL("https://api.github.com/repos/realwater/GitHubApi/contents/src/main/java/com/jenkins/git/HomeController.java");
+	    URL targetUrl = new URL("https://api.github.com/repos/realwater/GitHubApi/contents/src/main/java/com/github/api/controller/HomeController.java");
 		httpUrlConnection = (HttpURLConnection)targetUrl.openConnection();
 
 		httpUrlConnection.setRequestMethod("GET");
@@ -202,17 +205,17 @@ public class HomeController {
 			result += resultBuffer;
 		}
 
-//		JSONParser parser = new JSONParser();
-//
-//		Object obj = parser.parse(result);
-//
-//		JSONObject jsonObject = (JSONObject) obj;
-//
-//		String source = (String) jsonObject.get("content");
-//
-//		byte[] decoded = Base64.decodeBase64(source);
+		JSONParser parser = new JSONParser();
 
-		//model.addAttribute("result", new String(decoded));
+		Object obj = parser.parse(result);
+
+		JSONObject jsonObject = (JSONObject) obj;
+
+		String source = (String) jsonObject.get("content");
+
+		byte[] decoded = Base64.decodeBase64(source.getBytes());
+
+		model.addAttribute("result", new String(decoded));
 		return "result";
 	}
 
