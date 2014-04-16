@@ -1,4 +1,4 @@
-package com.github.api.controller;
+package com.flyJoin.gitHubApi.controller;
 
 import java.io.BufferedReader;
 import java.io.IOException;

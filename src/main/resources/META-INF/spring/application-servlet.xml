@@ -8,14 +8,12 @@
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.1.xsd">	
-	
-	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
-	
+		
 	<!-- Enables the Spring MVC @Controller programming model -->	
 	<mvc:annotation-driven />
 	
 	<!-- annotation 기반 스프링 빈 등록 컴포넌트 스캔 -->
-	<context:component-scan base-package="com.github.api.controller" />
+	<context:component-scan base-package="com.flyJoin.gitHubApi.controller" />
 		
 	<!-- View Negotiating 설정  -->
 	<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">		
@@ -66,6 +64,32 @@
 		<!-- 자동 어노테이션 감지 유무 -->
 		<property name="autodetectAnnotations" value="true" />		
 	</bean>	
+	
+	<!-- RestTemplate 설정 -->
+	<bean id="RestTemplate" class="org.springframework.web.client.RestTemplate">
+		<property name="messageConverters">
+			<list>
+				<bean class="org.springframework.http.converter.FormHttpMessageConverter">
+					<property name="charset">
+						<bean class="java.nio.charset.Charset" factory-method="forName">
+							<constructor-arg value="UTF-8"/>
+						</bean>
+					</property>
+				</bean>
+				<bean class="org.springframework.http.converter.StringHttpMessageConverter"/>
+				<bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter"/>
+				<bean id="messageConverter" class="org.springframework.http.converter.xml.MarshallingHttpMessageConverter">
+					<property name="marshaller" ref="xstreamMarshaller" />
+					<property name="unmarshaller" ref="xstreamMarshaller" />
+				</bean>
+			 </list>
+		</property>
+	</bean>
+	
+	<!-- RestTemplate 요청 용 Manager Bean -->
+	<bean id="restTemplateRequestManager" class="com.flyJoin.gitHubApi.http.RestTemplateRequestManager" >
+		<property name="restTemplate" ref="RestTemplate"></property>
+	</bean>
 	
 	<!-- swagger 컨트롤러 싱글톤 : API DOC 을 자동생성한다.-->
 	<context:component-scan base-package="com.mangofactory.swagger.spring.controller" use-default-filters="false">

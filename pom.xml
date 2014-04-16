@@ -11,7 +11,8 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java-version>1.6</java-version>
-		<org.springframework-version>3.1.2.RELEASE</org.springframework-version>		
+		<org.springframework-version>3.1.2.RELEASE</org.springframework-version>
+		<org.springframework-data-version>1.0.3.RELEASE</org.springframework-data-version>		
 	</properties>
 		
 	<build>
@@ -134,7 +135,21 @@
 			<artifactId>spring-tx</artifactId>
 			<version>${org.springframework-version}</version>
 		</dependency>
-
+		
+		<!-- Redis 설정 -->
+	    <dependency>
+	        <groupId>org.springframework.data</groupId>
+	        <artifactId>spring-data-redis</artifactId>
+	        <version>${org.springframework-data-version}</version>
+	    </dependency>
+	    
+	    <dependency>
+			<groupId>redis.clients</groupId>
+			<artifactId>jedis</artifactId>
+			<version>2.1.0</version>
+		</dependency>
+		<!-- // Redis 설정 끌 -->
+		
 		<!-- Servlet  -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
