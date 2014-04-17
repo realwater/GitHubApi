@@ -21,8 +21,8 @@
 		<property name="ignoreAcceptHeader" value="true" />
 		<!-- 기본 맵핑 Media Type 설정 default:XML -->
 		<property name="defaultContentType" value="application/json" />
-		
-		<!-- 미디어 타입 설정 -->
+				
+		<!-- 미디어 타입 설정 
 		<property name="mediaTypes">
 			<map>
 				<entry key="html" value="text/html" />
@@ -30,6 +30,7 @@
 				<entry key="xml" value="application/xml" />	
 			</map>
 		</property>		
+		-->
 		
 		<property name="defaultViews">
 			<list>
@@ -84,11 +85,6 @@
 				</bean>
 			 </list>
 		</property>
-	</bean>
-	
-	<!-- RestTemplate 요청 용 Manager Bean -->
-	<bean id="restTemplateRequestManager" class="com.flyJoin.gitHubApi.http.RestTemplateRequestManager" >
-		<property name="restTemplate" ref="RestTemplate"></property>
 	</bean>
 	
 	<!-- swagger 컨트롤러 싱글톤 : API DOC 을 자동생성한다.-->
