@@ -29,6 +29,14 @@
 	    p:connection-factory-ref="jedisConnectionFactory" 
 	    p:keySerializer-ref="jdkSerialization"
 	   	p:hashValueSerializer-ref="jdkSerialization"
-	   	p:valueSerializer-ref="jdkSerialization" />  		 
+	   	p:valueSerializer-ref="jdkSerialization" />  	
+	   	
+	<!-- 수동 Xstream 설정 -->
+	<bean id="JsonHierarchicalStreamDriver" class="com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver" />  	
+	   	
+	<bean id="XstreamManager" class="com.thoughtworks.xstream.XStream">
+		<constructor-arg ref="JsonHierarchicalStreamDriver" />	
+	</bean>
+ 	<!--// 수동 Xstream 설정 끝 -->	
  		
 </beans>

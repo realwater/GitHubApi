@@ -1,9 +1,5 @@
 package com.flyJoin.gitHubApi.controller;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +8,11 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
 import com.flyJoin.gitHubApi.model.Repos;
+import com.thoughtworks.xstream.XStream;
 
 @Controller
 @RequestMapping("/repos")
@@ -22,6 +20,9 @@ public class RepositoryController {
 
 	@Autowired
 	RestTemplate restTemplate;
+
+	@Autowired
+	XStream xstreamManager;
 
 	/**
 	 * 저장소 분석
@@ -41,55 +42,33 @@ public class RepositoryController {
 	 * 2014.04.16
 	 * @author realwater
 	 */
-	@RequestMapping(value="/{id}/{project}/dir/info/**", method=RequestMethod.GET)
-	public void repositoryDirectoryInfo(
-			@PathVariable("id") String id,
-			@PathVariable("project") String project,
+	@RequestMapping(value="/{owner}/{repo}/contents/**", method=RequestMethod.GET)
+	@ResponseBody
+	public String repositoryInfo(
+			@PathVariable("owner") String owner,
+			@PathVariable("repo") String repo,
 			HttpServletRequest request,
 			ModelMap model) {
 
-		// Git 저장소 path 구해오기
-		String repositoryPath = request.getRequestURI().replace("/repos/"+id+"/"+project+"/dir/info", "");
+		String requestPath = request.getRequestURI();
+		String url = "https://api.github.com"+requestPath;
+		String resultJson = null;
 
-		List<Repos> repoArrayList = new ArrayList<Repos>();
-		String url = "https://api.github.com/repos/realwater/GitHubApi/contents/src/main/java/com/flyJoin/gitHubApi/controller";
+		Repos repos = new Repos();
+		Repos[] reposList = {};
 
-		try{
-			Repos[] reposList = restTemplate.getForObject(url, Repos[].class);
-			repoArrayList = Arrays.asList(reposList);
-		}catch( Exception e){
-			e.printStackTrace();
+		// 확장자가 있으면 Object로 호출
+		if (requestPath.indexOf('.') > 0) {
+			xstreamManager.alias("repos", Repos.class);
+			repos = restTemplate.getForObject(url, Repos.class);
+			resultJson = xstreamManager.toXML(repos);
+		} else { // 확장자가 있으면 Object로 호출
+			xstreamManager.alias("repos", Repos[].class);
+			reposList = restTemplate.getForObject(url, Repos[].class);
+			resultJson = xstreamManager.toXML(reposList);
 		}
 
-		model.clear();
-		model.addAttribute(repoArrayList);
+		return resultJson;
 	}
 
-	/**
-	 * 저장소 파일 정보
-	 * 2014.04.16
-	 * @author realwater
-	 */
-	@RequestMapping(value="/{id}/{project}/file/info/**", method=RequestMethod.GET)
-	public void repositoryFileInfo(
-			@PathVariable("id") String id,
-			@PathVariable("project") String project,
-			HttpServletRequest request,
-			ModelMap model) {
-
-		// Git 저장소 path 구해오기
-		String repositoryPath = request.getRequestURI().replace("/repos/"+id+"/"+project+"/file/info", "");
-
-		Repos repo = new Repos();
-		String url = "https://api.github.com/repos/realwater/GitHubApi/contents/src/main/java/com/flyJoin/gitHubApi/controller/HomeController.java";
-
-		try{
-			repo = restTemplate.getForObject(url, Repos.class);
-		}catch( Exception e){
-			e.printStackTrace();
-		}
-
-		model.clear();
-		model.addAttribute(repo);
-	}
 }

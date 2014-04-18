@@ -3,7 +3,10 @@ package com.flyJoin.gitHubApi.model;
 import org.apache.commons.codec.binary.Base64;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
+@XStreamAlias("repos")
 public class Repos {
 
 	private String name;

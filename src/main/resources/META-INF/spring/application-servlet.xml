@@ -22,7 +22,7 @@
 		<!-- 기본 맵핑 Media Type 설정 default:XML -->
 		<property name="defaultContentType" value="application/json" />
 				
-		<!-- 미디어 타입 설정 
+		<!-- 미디어 타입 설정 --> 
 		<property name="mediaTypes">
 			<map>
 				<entry key="html" value="text/html" />
@@ -30,7 +30,7 @@
 				<entry key="xml" value="application/xml" />	
 			</map>
 		</property>		
-		-->
+		
 		
 		<property name="defaultViews">
 			<list>
