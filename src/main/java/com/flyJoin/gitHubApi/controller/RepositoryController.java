@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import com.flyJoin.gitHubApi.model.Repos;
@@ -29,12 +30,13 @@ public class RepositoryController {
 	 * 2014.04.16
 	 * @author realwater
 	 */
-	@RequestMapping(value="/{id}/analysis/{project}/{token}", method=RequestMethod.GET)
+	@RequestMapping(value="/{owner}/{repo}/analysis/{token}", method=RequestMethod.GET)
 	public void analysisRepository(
-			@PathVariable("id") String id,
-			@PathVariable("project") String project,
+			@PathVariable("owner") String id,
+			@PathVariable("repo") String project,
 			@PathVariable("token") String token) {
 
+		
 	}
 
 	/**
@@ -57,15 +59,19 @@ public class RepositoryController {
 		Repos repos = new Repos();
 		Repos[] reposList = {};
 
-		// 확장자가 있으면 Object로 호출
-		if (requestPath.indexOf('.') > 0) {
-			xstreamManager.alias("repos", Repos.class);
-			repos = restTemplate.getForObject(url, Repos.class);
-			resultJson = xstreamManager.toXML(repos);
-		} else { // 확장자가 있으면 Object로 호출
-			xstreamManager.alias("repos", Repos[].class);
-			reposList = restTemplate.getForObject(url, Repos[].class);
-			resultJson = xstreamManager.toXML(reposList);
+		try {
+			// 확장자가 있으면 Object로 호출
+			if (requestPath.indexOf('.') > 0) {
+				xstreamManager.alias("repos", Repos.class);
+				repos = restTemplate.getForObject(url, Repos.class);
+				resultJson = xstreamManager.toXML(repos);
+			} else { // 확장자가 있으면 Object로 호출							
+				xstreamManager.alias("repos", Repos[].class);
+				reposList = restTemplate.getForObject(url, Repos[].class);
+				resultJson = xstreamManager.toXML(reposList);			   			
+			}		
+		} catch (final HttpClientErrorException e) {
+		    resultJson = e.getResponseBodyAsString();
 		}
 
 		return resultJson;

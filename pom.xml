@@ -238,8 +238,15 @@
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
 			<version>1.2</version>
-		</dependency>           
+		</dependency>          
 		
+		<!-- SVN KIT --> 
+		<dependency>
+			<groupId>org.tmatesoft.svnkit</groupId>
+			<artifactId>svnkit</artifactId>
+			<version>1.8.3</version>
+		</dependency>
+
 		<!-- swagger -->
 		<dependency>
 		    <groupId>com.mangofactory</groupId>
