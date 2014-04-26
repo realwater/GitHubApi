@@ -22,7 +22,7 @@
 	<!-- #### REIDS TEMPLETE 설정  ### -->     
 	<bean id="jdkSerialization" class="org.springframework.data.redis.serializer.JdkSerializationRedisSerializer" />
   	<bean id="jedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
- 		p:use-pool="true"  p:host-name="125.209.195.173" p:port="6379" />
+ 		p:use-pool="true"  p:host-name="127.0.0.1" p:port="6379" />
 		
 	<!-- redis template definition --> 
   	<bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate"
@@ -38,5 +38,7 @@
 		<constructor-arg ref="JsonHierarchicalStreamDriver" />	
 	</bean>
  	<!--// 수동 Xstream 설정 끝 -->	
+ 	
+ 	<bean id="RepoAnalisysServiceImpl" class="com.flyJoin.analisys.service.RepoAnalisysServiceImpl" />
  		
 </beans>

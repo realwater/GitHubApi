@@ -22,39 +22,54 @@ import org.tmatesoft.svn.core.wc.SVNWCUtil;
 
 public class Test {
 
+	private SVNURL svnUrl;
+	
 	public void getListOff() {
-		SVNRepositoryFactoryImpl.setup();
-		SVNURL svnUrl;
+		//SVNRepositoryFactoryImpl.setup();
+		
 		try {
-			svnUrl = SVNURL.parseURIEncoded("https://github.com/realwater/GitHubApi");		
+			this.svnUrl = SVNURL.parseURIEncoded("https://github.com/realwater/GitHubApi");		
 			SVNRepository repository = SVNRepositoryFactory.create(svnUrl, null);			
 			
 			// 인증 처리
 			//ISVNAuthenticationManager authenticationManager = SVNWCUtil.createDefaultAuthenticationManager("realwater", "3184love");
 			//repository.setAuthenticationManager(authenticationManager);
 			
-			// 리파지토리 DIR 정보 가져오기
-			Collection<?> entries = repository.getDir("/trunk/src/main/java/com/flyJoin/gitHubApi/controller", -1, null, (Collection<?>) null);
+			getRepoList(repository, "/trunk");			
+		} catch (SVNException e) {
+			e.printStackTrace();
+		}	
+	}
+	
+	public void getRepoList(SVNRepository repository, String path) {
+		// 리파지토리 DIR 정보 가져오기
+		Collection<?> entries;
+		try {
+			entries = repository.getDir(path, -1, null, (Collection<?>) null);
 			Iterator<?> iterator = entries.iterator();
 			
 			while (iterator.hasNext()) {
 				SVNDirEntry entry = (SVNDirEntry) iterator.next();
-				
+				System.out.println( "/" + (path.equals( "" ) ? "" : path + "/" ) + entry.getName( ) + 
+						                                   " ( author: '" + entry.getAuthor( ) + "'; revision: " + entry.getRevision( ) + 
+						                                   "; date: " + entry.getDate( ) + ")" );
 				if (entry.getKind() == SVNNodeKind.DIR) { // 하위 리스트가 디렉토리일 경우
-					System.out.println(entry.getName());
+					getRepoList( repository, ( path.equals( "" ) ) ? entry.getName( ) : path + "/" + entry.getName( ) );
 				} else { // file 일 경우
+					//System.out.println(entry.getName());
+					
 					// 파일 소스 정보 가져오기
-					String fileUrl = entry.getURL().toString();					
-					fileUrl = fileUrl.replaceAll(svnUrl.toString(), "");					
-					ByteArrayOutputStream baos = new ByteArrayOutputStream( );			
-					repository.getFile( fileUrl , -1 , null , baos );
-					System.out.println(baos.toString());
+//					String fileUrl = entry.getURL().toString();					
+//					fileUrl = fileUrl.replaceAll(this.svnUrl.toString(), "");					
+//					ByteArrayOutputStream baos = new ByteArrayOutputStream( );			
+//					repository.getFile( fileUrl , -1 , null , baos );
+//					System.out.println(baos.toString());
 				}
 				
-			}			
+			}
 		} catch (SVNException e) {
 			e.printStackTrace();
-		}	
+		}		
 	}
 		
 	public static void main(String args[]) {

@@ -65,11 +65,11 @@ public class RepositoryController {
 				xstreamManager.alias("repos", Repos.class);
 				repos = restTemplate.getForObject(url, Repos.class);
 				resultJson = xstreamManager.toXML(repos);
-			} else { // 확장자가 있으면 Object로 호출							
+			} else { // 확장자가 있으면 Object로 호출
 				xstreamManager.alias("repos", Repos[].class);
 				reposList = restTemplate.getForObject(url, Repos[].class);
 				resultJson = xstreamManager.toXML(reposList);			   			
-			}		
+			}
 		} catch (final HttpClientErrorException e) {
 		    resultJson = e.getResponseBodyAsString();
 		}
