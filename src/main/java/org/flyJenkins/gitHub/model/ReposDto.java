@@ -1,4 +1,4 @@
-package com.flyJoin.gitHubApi.model;
+package org.flyJenkins.gitHub.model;
 
 import org.apache.commons.codec.binary.Base64;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
@@ -7,7 +7,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @XStreamAlias("repos")
-public class Repos {
+public class ReposDto {
 
 	private String name;
 

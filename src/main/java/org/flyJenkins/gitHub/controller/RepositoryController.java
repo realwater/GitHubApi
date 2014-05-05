@@ -1,7 +1,10 @@
-package com.flyJoin.gitHubApi.controller;
+package org.flyJenkins.gitHub.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.flyJenkins.analisys.model.RepoAnalisysDto;
+import org.flyJenkins.analisys.service.RepoAnalisysServiceImpl;
+import org.flyJenkins.gitHub.model.ReposDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -12,7 +15,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import com.flyJoin.gitHubApi.model.Repos;
 import com.thoughtworks.xstream.XStream;
 
 @Controller
@@ -20,22 +22,34 @@ import com.thoughtworks.xstream.XStream;
 public class RepositoryController {
 
 	@Autowired
-	RestTemplate restTemplate;
+	private RestTemplate restTemplate;
 
 	@Autowired
-	XStream xstreamManager;
+	private XStream xstreamManager;
+	
+	@Autowired
+	private RepoAnalisysServiceImpl repoAnalisysServiceImpl;
 
 	/**
 	 * 저장소 분석
 	 * 2014.04.16
 	 * @author realwater
 	 */
-	@RequestMapping(value="/{owner}/{repo}/analysis/{token}", method=RequestMethod.GET)
+	@RequestMapping(value="/{owner}/{repo}/analysis", method=RequestMethod.GET)
 	public void analysisRepository(
-			@PathVariable("owner") String id,
-			@PathVariable("repo") String project,
-			@PathVariable("token") String token) {
-
+			@PathVariable("owner") String owner,
+			@PathVariable("repo") String repo ) {
+		
+		StringBuffer repoUrl = new StringBuffer();
+		repoUrl.append("https://github.com");
+		repoUrl.append("/");
+		repoUrl.append(owner);
+		repoUrl.append("/");
+		repoUrl.append(repo);
+			
+		RepoAnalisysDto repoAnalisysCommand = new RepoAnalisysDto();
+		repoAnalisysCommand.setRepoUrl(repoUrl.toString());
+		repoAnalisysCommand.setRepoPath("/trunk");
 		
 	}
 
@@ -56,18 +70,18 @@ public class RepositoryController {
 		String url = "https://api.github.com"+requestPath;
 		String resultJson = null;
 
-		Repos repos = new Repos();
-		Repos[] reposList = {};
+		ReposDto repos = new ReposDto();
+		ReposDto[] reposList = {};
 
 		try {
 			// 확장자가 있으면 Object로 호출
 			if (requestPath.indexOf('.') > 0) {
-				xstreamManager.alias("repos", Repos.class);
-				repos = restTemplate.getForObject(url, Repos.class);
+				xstreamManager.alias("repos", ReposDto.class);
+				repos = restTemplate.getForObject(url, ReposDto.class);
 				resultJson = xstreamManager.toXML(repos);
 			} else { // 확장자가 있으면 Object로 호출
-				xstreamManager.alias("repos", Repos[].class);
-				reposList = restTemplate.getForObject(url, Repos[].class);
+				xstreamManager.alias("repos", ReposDto[].class);
+				reposList = restTemplate.getForObject(url, ReposDto[].class);
 				resultJson = xstreamManager.toXML(reposList);			   			
 			}
 		} catch (final HttpClientErrorException e) {

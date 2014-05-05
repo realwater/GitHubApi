@@ -39,6 +39,9 @@
 	</bean>
  	<!--// 수동 Xstream 설정 끝 -->	
  	
- 	<bean id="RepoAnalisysServiceImpl" class="com.flyJoin.analisys.service.RepoAnalisysServiceImpl" />
+ 	<!-- Service 등록 -->
+ 	<bean id="RepoAnalisysServiceImpl" class="org.flyJenkins.analisys.service.RepoAnalisysServiceImpl" />
+ 	
+ 	<bean id="FileAnalisysServiceImpl" class="org.flyJenkins.analisys.service.FileAnalisysServiceImpl" />	
  		
 </beans>

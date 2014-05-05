@@ -1,6 +1,6 @@
-package com.flyJoin.analisys.command;
+package org.flyJenkins.analisys.model;
 
-public class RepoAnalisysCommand {
+public class RepoAnalisysDto {
 	
 	private String id;
 	

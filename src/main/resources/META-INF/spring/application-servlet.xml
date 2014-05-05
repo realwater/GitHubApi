@@ -13,7 +13,7 @@
 	<mvc:annotation-driven />
 	
 	<!-- annotation 기반 스프링 빈 등록 컴포넌트 스캔 -->
-	<context:component-scan base-package="com.flyJoin.gitHubApi.controller" />
+	<context:component-scan base-package="org.flyJenkins.gitHub.controller" />
 		
 	<!-- View Negotiating 설정  -->
 	<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">		
@@ -91,6 +91,7 @@
 	<context:component-scan base-package="com.mangofactory.swagger.spring.controller" use-default-filters="false">
 	    <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
 	</context:component-scan>
+	
 	<bean id="swaggerConfiguration" class="com.mangofactory.swagger.SwaggerConfiguration">
 	    <property name="basePath" value="/"/>
 	    <property name="apiVersion" value="0.1"/>
