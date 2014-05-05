@@ -3,10 +3,10 @@ package com.flyJoin.analisys.service;
 import java.util.List;
 
 import org.flyJenkins.analisys.model.FileAnalisysDto;
-import org.flyJenkins.analisys.model.ProjectCommonDto;
 import org.flyJenkins.analisys.model.RepoAnalisysDto;
 import org.flyJenkins.analisys.service.FileAnalisysService;
 import org.flyJenkins.analisys.service.RepoAnalisysServiceImpl;
+import org.flyJenkins.gitHub.model.ProjectCommonDto;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,9 +39,6 @@ public class RepoAnalisysServiceImplTest {
 		
 		// 파일 목록 리스트 분석
 		ProjectCommonDto projectCommonDto = fileAnalisysServiceImpl.getFileAnalisysResult(fileInfoList);
-		
-		
-		
 		
 	}
 	
