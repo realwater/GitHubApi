@@ -1,12 +1,13 @@
-package com.flyJoin.analisys.service;
+package org.flyJenkins.analisys.service;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.flyJenkins.analisys.model.FileAnalisysDto;
 import org.flyJenkins.analisys.model.RepoAnalisysDto;
 import org.flyJenkins.analisys.service.FileAnalisysService;
 import org.flyJenkins.analisys.service.RepoAnalisysServiceImpl;
-import org.flyJenkins.gitHub.model.ProjectCommonDto;
+import org.flyJenkins.gitHub.model.ProjectDto;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,7 @@ public class RepoAnalisysServiceImplTest {
 		List<FileAnalisysDto> fileInfoList = repoAnalisysServiceImpl.getRepoAnalisysFileList(repoAnalisys);		
 		
 		// 파일 목록 리스트 분석
-		ProjectCommonDto projectCommonDto = fileAnalisysServiceImpl.getFileAnalisysResult(fileInfoList);
+		HashMap<String, Object> fileAnalisysInfo = fileAnalisysServiceImpl.getFileAnalisysResult(fileInfoList);
 		
 	}
 	

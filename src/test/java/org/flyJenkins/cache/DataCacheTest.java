@@ -1,4 +1,4 @@
-package com.flyJoin.gitHubApi.cache;
+package org.flyJenkins.cache;
 
 import java.util.Set;
 

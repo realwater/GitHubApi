@@ -1,9 +1,15 @@
 package org.flyJenkins.gitHub.controller;
 
+import java.util.HashMap;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
+import org.flyJenkins.analisys.model.FileAnalisysDto;
 import org.flyJenkins.analisys.model.RepoAnalisysDto;
+import org.flyJenkins.analisys.service.FileAnalisysService;
 import org.flyJenkins.analisys.service.RepoAnalisysServiceImpl;
+import org.flyJenkins.gitHub.model.ProjectDto;
 import org.flyJenkins.gitHub.model.ReposDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,6 +35,9 @@ public class RepositoryController {
 	
 	@Autowired
 	private RepoAnalisysServiceImpl repoAnalisysServiceImpl;
+	
+	@Autowired
+	private FileAnalisysService fileAnalisysServiceImpl;
 
 	/**
 	 * 저장소 분석
@@ -38,7 +47,11 @@ public class RepositoryController {
 	@RequestMapping(value="/{owner}/{repo}/analysis", method=RequestMethod.GET)
 	public void analysisRepository(
 			@PathVariable("owner") String owner,
-			@PathVariable("repo") String repo ) {
+			@PathVariable("repo") String repo,
+			HttpServletRequest request,
+			ModelMap mode) {
+		
+		ProjectDto projectDto = new ProjectDto();
 		
 		StringBuffer repoUrl = new StringBuffer();
 		repoUrl.append("https://github.com");
@@ -49,8 +62,18 @@ public class RepositoryController {
 			
 		RepoAnalisysDto repoAnalisysCommand = new RepoAnalisysDto();
 		repoAnalisysCommand.setRepoUrl(repoUrl.toString());
-		repoAnalisysCommand.setRepoPath("/trunk");
+		repoAnalisysCommand.setRepoPath("/trunk");		
 		
+		// 저장소에서 파일 목록 뽑아오기
+		List<FileAnalisysDto> fileInfoList = repoAnalisysServiceImpl.getRepoAnalisysFileList(repoAnalisysCommand);		
+		
+		// 파일 목록 리스트 분석
+		HashMap<String, Object> fileAnalisysInfo = fileAnalisysServiceImpl.getFileAnalisysResult(fileInfoList);		
+		projectDto.setProjectName(repo);
+		projectDto.setAnalisysInfo(fileAnalisysInfo);
+		
+		mode.clear();
+		mode.addAttribute("projectDto", projectDto);
 	}
 
 	/**

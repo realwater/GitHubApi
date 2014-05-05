@@ -7,7 +7,6 @@ import java.util.List;
 import org.flyJenkins.analisys.model.FileAnalisysDto;
 import org.flyJenkins.analisys.strategy.FileAnalisysStrategy;
 import org.flyJenkins.common.util.CommonClassUtil;
-import org.flyJenkins.gitHub.model.ProjectCommonDto;
 
 public class FileAnalisysServiceImpl implements FileAnalisysService {
 
@@ -15,11 +14,12 @@ public class FileAnalisysServiceImpl implements FileAnalisysService {
 	 * 파일 소스 분석 결과 리턴
 	 */
 	@Override
-	public ProjectCommonDto getFileAnalisysResult(List<FileAnalisysDto> fileAnalisysDtoList) {		
-		// 초기화
-		ProjectCommonDto projectCommonDto = new ProjectCommonDto();
+	public HashMap<String, Object> getFileAnalisysResult(List<FileAnalisysDto> fileAnalisysDtoList) {		
+		HashMap<String, Object> projectAnalisysInfo = new HashMap<String, Object>();
+		
 		StringBuffer sbFileClassName 	  = new StringBuffer();
 		StringBuffer sbExtClassName 	  = new StringBuffer();
+		
 		String extStrategyClassName 	  = "";
 		String fileStrategyClassName 	  = "";
 		String strategyClassName 		  = "";
@@ -56,7 +56,7 @@ public class FileAnalisysServiceImpl implements FileAnalisysService {
 					strategyClass = Class.forName(strategyClassName);
 					FileAnalisysStrategy fileAanalisysStrategy = (FileAnalisysStrategy) strategyClass.newInstance();
 					HashMap<String, Object> fileAanalisysResult = fileAanalisysStrategy.getResultAnalisysInfo(fileAnalisysDto);
-					projectCommonDto.setAnalisysInfo(fileAanalisysResult);					
+					projectAnalisysInfo.putAll(fileAanalisysResult);					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -67,6 +67,6 @@ public class FileAnalisysServiceImpl implements FileAnalisysService {
 			sbExtClassName.delete(0, sbExtClassName.capacity());
 		}
 		
-		return projectCommonDto;
+		return projectAnalisysInfo;
 	}
 }

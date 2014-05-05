@@ -9,11 +9,9 @@ import org.junit.Before;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("project")
-public class ProjectCommonDto {
+public class ProjectDto {
 	
 	private String projectName;
-
-	private String projectType;
 		
 	HashMap<String, Object> analisysInfo;
 
@@ -30,19 +28,11 @@ public class ProjectCommonDto {
 		this.projectName = projectName;
 	}
 
-	public String getProjectType() {
-		return projectType;
-	}
-
-	public void setProjectType(String projectType) {
-		this.projectType = projectType;
-	}
-
 	public HashMap<String, Object> getAnalisysInfo() {
 		return analisysInfo;
 	}
 
 	public void setAnalisysInfo(HashMap<String, Object> analisysInfo) {
-		analisysInfo.putAll(analisysInfo);
+		this.analisysInfo = analisysInfo;
 	}
 }
