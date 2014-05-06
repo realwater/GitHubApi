@@ -7,14 +7,11 @@ import org.flyJenkins.analisys.model.FileAnalisysDto;
 import org.flyJenkins.analisys.model.RepoAnalisysDto;
 import org.flyJenkins.analisys.service.FileAnalisysService;
 import org.flyJenkins.analisys.service.RepoAnalisysServiceImpl;
-import org.flyJenkins.gitHub.model.ProjectDto;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import com.thoughtworks.xstream.XStream;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"classpath*:META-INF/spring/applicationContext*"})
@@ -26,11 +23,8 @@ public class RepoAnalisysServiceImplTest {
 	@Autowired
 	private FileAnalisysService fileAnalisysServiceImpl;
 	
-	@Autowired
-	private XStream xstreamManager;
-	
 	@Test
-	public void analisysStartTest() {		
+	public void analisysStartTest() {
 		RepoAnalisysDto repoAnalisys = new RepoAnalisysDto();
 		repoAnalisys.setRepoUrl("https://github.com/realwater/GitHubApi");
 		repoAnalisys.setRepoPath("/trunk");
@@ -41,6 +35,7 @@ public class RepoAnalisysServiceImplTest {
 		// 파일 목록 리스트 분석
 		HashMap<String, Object> fileAnalisysInfo = fileAnalisysServiceImpl.getFileAnalisysResult(fileInfoList);
 		
+		System.out.println(fileAnalisysInfo);
 	}
 	
 }

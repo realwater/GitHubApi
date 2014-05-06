@@ -17,9 +17,7 @@
  	http://www.springframework.org/schema/util
  	http://www.springframework.org/schema/util/spring-util-3.1.xsd">
 	
-	<!-- Root Context: defines shared resources visible to all other web components -->
-		
-	<!-- #### REIDS TEMPLETE 설정  ### -->     
+	<!-- jedis Connection Setting -->     
 	<bean id="jdkSerialization" class="org.springframework.data.redis.serializer.JdkSerializationRedisSerializer" />
   	<bean id="jedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
  		p:use-pool="true"  p:host-name="127.0.0.1" p:port="6379" />
@@ -34,7 +32,7 @@
 	<!-- 수동 Xstream 설정 -->
 	<bean id="JsonHierarchicalStreamDriver" class="com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver" />  	
 	   	
-	<bean id="XstreamManager" class="com.thoughtworks.xstream.XStream">
+	<bean id="xstreamManager" class="com.thoughtworks.xstream.XStream">
 		<constructor-arg ref="JsonHierarchicalStreamDriver" />	
 	</bean>
  	<!--// 수동 Xstream 설정 끝 -->	

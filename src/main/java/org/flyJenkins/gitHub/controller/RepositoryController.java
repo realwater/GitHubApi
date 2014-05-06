@@ -28,16 +28,16 @@ import com.thoughtworks.xstream.XStream;
 public class RepositoryController {
 
 	@Autowired
-	private RestTemplate restTemplate;
-
-	@Autowired
-	private XStream xstreamManager;
-	
-	@Autowired
 	private RepoAnalisysServiceImpl repoAnalisysServiceImpl;
 	
 	@Autowired
 	private FileAnalisysService fileAnalisysServiceImpl;
+	
+	@Autowired
+	private RestTemplate restTemplate;
+
+	@Autowired
+	private XStream xstreamManager;
 
 	/**
 	 * 저장소 분석

@@ -4,10 +4,12 @@ import java.util.HashMap;
 
 import javax.annotation.PostConstruct;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.junit.Before;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 @XStreamAlias("project")
 public class ProjectDto {
 	

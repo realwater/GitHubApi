@@ -17,12 +17,15 @@
 		
 	<!-- View Negotiating 설정  -->
 	<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">		
-		<!-- Request의 Accept 헤더 값 사용 유무 false 일 경우 사용 -->		
+		<!-- Request의 Accept 헤더 값 사용 유무 false 일 경우 사용 		
 		<property name="ignoreAcceptHeader" value="true" />
-		<!-- 기본 맵핑 Media Type 설정 default:XML -->
+		-->
+		
+		<!-- 기본 맵핑 Media Type 설정 default:XML 
 		<property name="defaultContentType" value="application/json" />
+		-->		
 				
-		<!-- 미디어 타입 설정 --> 
+		<!-- 미디어 타입 설정 
 		<property name="mediaTypes">
 			<map>
 				<entry key="html" value="text/html" />
@@ -30,7 +33,7 @@
 				<entry key="xml" value="application/xml" />	
 			</map>
 		</property>		
-		
+		 -->
 		
 		<property name="defaultViews">
 			<list>
