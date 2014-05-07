@@ -1,6 +1,6 @@
-package org.flyJenkins.analisys.model;
+package org.flyJenkins.analysis.model;
 
-public class FileAnalisysDto {
+public class FileAnalysisDto {
 	
 	private String fileName;
 

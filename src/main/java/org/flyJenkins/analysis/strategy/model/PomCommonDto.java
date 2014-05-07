@@ -1,24 +1,33 @@
-package org.flyJenkins.analisys.handler.model;
+package org.flyJenkins.analysis.strategy.model;
 
 import java.util.HashMap;
+import java.util.List;
 
-public class PomParserDto {
-	
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement(name = "project", namespace="http://maven.apache.org/POM/4.0.0")
+@XmlAccessorType(XmlAccessType.FIELD)
+public class PomCommonDto {
+
+	@XmlElement(name="modelVersion")
 	private String modelVersion;
+	
+	private String groupId;
 	
 	private String artifactId;
 	
 	private String name;
-	
+
 	private String packaging;
 	
 	private String version;
 	
-	private String encoding;
-	
 	private HashMap<String, String> properties;
-
-	private HashMap<String, String> dependencies;
+	
+	private List<PomDependencyDto> dependency;
 
 	public String getModelVersion() {
 		return modelVersion;
@@ -27,7 +36,15 @@ public class PomParserDto {
 	public void setModelVersion(String modelVersion) {
 		this.modelVersion = modelVersion;
 	}
-	
+
+	public String getGroupId() {
+		return groupId;
+	}
+
+	public void setGroupId(String groupId) {
+		this.groupId = groupId;
+	}
+
 	public String getArtifactId() {
 		return artifactId;
 	}
@@ -35,7 +52,7 @@ public class PomParserDto {
 	public void setArtifactId(String artifactId) {
 		this.artifactId = artifactId;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
@@ -60,14 +77,6 @@ public class PomParserDto {
 		this.version = version;
 	}
 
-	public String getEncoding() {
-		return encoding;
-	}
-
-	public void setEncoding(String encoding) {
-		this.encoding = encoding;
-	}
-	
 	public HashMap<String, String> getProperties() {
 		return properties;
 	}
@@ -76,11 +85,11 @@ public class PomParserDto {
 		this.properties = properties;
 	}
 
-	public HashMap<String, String> getDependencies() {
-		return dependencies;
+	public List<PomDependencyDto> getDependency() {
+		return dependency;
 	}
 
-	public void setDependencies(HashMap<String, String> dependencies) {
-		this.dependencies = dependencies;
+	public void setDependency(List<PomDependencyDto> dependency) {
+		this.dependency = dependency;
 	}
 }

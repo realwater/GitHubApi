@@ -5,10 +5,10 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.flyJenkins.analisys.model.FileAnalisysDto;
-import org.flyJenkins.analisys.model.RepoAnalisysDto;
-import org.flyJenkins.analisys.service.FileAnalisysService;
-import org.flyJenkins.analisys.service.RepoAnalisysServiceImpl;
+import org.flyJenkins.analysis.model.FileAnalysisDto;
+import org.flyJenkins.analysis.model.RepoAnalysisDto;
+import org.flyJenkins.analysis.service.FileAnalysisService;
+import org.flyJenkins.analysis.service.RepoAnalysisService;
 import org.flyJenkins.gitHub.model.ProjectDto;
 import org.flyJenkins.gitHub.model.ReposDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +28,11 @@ import com.thoughtworks.xstream.XStream;
 public class RepositoryController {
 
 	@Autowired
-	private RepoAnalisysServiceImpl repoAnalisysServiceImpl;
-	
+	private RepoAnalysisService repoAnalysisServiceImpl;
+
 	@Autowired
-	private FileAnalisysService fileAnalisysServiceImpl;
-	
+	private FileAnalysisService fileAnalysisServiceImpl;
+
 	@Autowired
 	private RestTemplate restTemplate;
 
@@ -50,28 +50,28 @@ public class RepositoryController {
 			@PathVariable("repo") String repo,
 			HttpServletRequest request,
 			ModelMap mode) {
-		
+
 		ProjectDto projectDto = new ProjectDto();
-		
+
 		StringBuffer repoUrl = new StringBuffer();
 		repoUrl.append("https://github.com");
 		repoUrl.append("/");
 		repoUrl.append(owner);
 		repoUrl.append("/");
 		repoUrl.append(repo);
-			
-		RepoAnalisysDto repoAnalisysCommand = new RepoAnalisysDto();
+
+		RepoAnalysisDto repoAnalisysCommand = new RepoAnalysisDto();
 		repoAnalisysCommand.setRepoUrl(repoUrl.toString());
-		repoAnalisysCommand.setRepoPath("/trunk");		
-		
+		repoAnalisysCommand.setRepoPath("/trunk");
+
 		// 저장소에서 파일 목록 뽑아오기
-		List<FileAnalisysDto> fileInfoList = repoAnalisysServiceImpl.getRepoAnalisysFileList(repoAnalisysCommand);		
-		
+		List<FileAnalysisDto> fileInfoList = repoAnalysisServiceImpl.getRepoAnalisysFileList(repoAnalisysCommand);
+
 		// 파일 목록 리스트 분석
-		HashMap<String, Object> fileAnalisysInfo = fileAnalisysServiceImpl.getFileAnalisysResult(fileInfoList);		
+		HashMap<String, Object> fileAnalisysInfo = fileAnalysisServiceImpl.getFileAnalisysResult(fileInfoList);
 		projectDto.setProjectName(repo);
 		projectDto.setAnalisysInfo(fileAnalisysInfo);
-		
+
 		mode.clear();
 		mode.addAttribute("projectDto", projectDto);
 	}
@@ -105,7 +105,7 @@ public class RepositoryController {
 			} else { // 확장자가 있으면 Object로 호출
 				xstreamManager.alias("repos", ReposDto[].class);
 				reposList = restTemplate.getForObject(url, ReposDto[].class);
-				resultJson = xstreamManager.toXML(reposList);			   			
+				resultJson = xstreamManager.toXML(reposList);
 			}
 		} catch (final HttpClientErrorException e) {
 		    resultJson = e.getResponseBodyAsString();
