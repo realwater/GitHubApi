@@ -2,8 +2,6 @@ package org.flyJenkins.gitHub.model;
 
 import java.util.HashMap;
 
-import javax.annotation.PostConstruct;
-
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.junit.Before;
 
@@ -12,14 +10,14 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @XStreamAlias("project")
 public class ProjectDto {
-	
+
 	private String projectName;
-		
-	HashMap<String, Object> analisysInfo;
+
+	HashMap<String, Object> analysisInfo;
 
 	@Before
 	public void init() {
-		this.analisysInfo = new HashMap<String, Object>();
+		this.analysisInfo = new HashMap<String, Object>();
 	}
 
 	public String getProjectName() {
@@ -30,11 +28,11 @@ public class ProjectDto {
 		this.projectName = projectName;
 	}
 
-	public HashMap<String, Object> getAnalisysInfo() {
-		return analisysInfo;
+	public HashMap<String, Object> getAnalysisInfo() {
+		return analysisInfo;
 	}
 
-	public void setAnalisysInfo(HashMap<String, Object> analisysInfo) {
-		this.analisysInfo = analisysInfo;
+	public void setAnalysisInfo(HashMap<String, Object> analysisInfo) {
+		this.analysisInfo = analysisInfo;
 	}
 }

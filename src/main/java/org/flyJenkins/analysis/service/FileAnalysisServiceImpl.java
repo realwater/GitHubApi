@@ -30,11 +30,11 @@ public class FileAnalysisServiceImpl implements FileAnalysisService {
 		while(fileAnalysisIterator.hasNext()) {
 			FileAnalysisDto fileAnalysisDto = fileAnalysisIterator.next();
 
-			sbFileClassName.append("com.flyJoin.analisys.strategy.");
+			sbFileClassName.append("org.flyJenkins.analysis.strategy.");
 			sbFileClassName.append(fileAnalysisDto.getFileName().toUpperCase());
 			sbFileClassName.append("AnalysisStrategy");
 
-			sbExtClassName.append("com.flyJoin.analisys.strategy.");
+			sbExtClassName.append("org.flyJenkins.analysis.strategy.");
 			sbExtClassName.append(fileAnalysisDto.getFileExtension().toUpperCase());
 			sbExtClassName.append("AnalysisStrategy");
 

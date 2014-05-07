@@ -68,9 +68,9 @@ public class RepositoryController {
 		List<FileAnalysisDto> fileInfoList = repoAnalysisServiceImpl.getRepoAnalisysFileList(repoAnalisysCommand);
 
 		// 파일 목록 리스트 분석
-		HashMap<String, Object> fileAnalisysInfo = fileAnalysisServiceImpl.getFileAnalisysResult(fileInfoList);
+		HashMap<String, Object> fileAnalysisInfo = fileAnalysisServiceImpl.getFileAnalisysResult(fileInfoList);
 		projectDto.setProjectName(repo);
-		projectDto.setAnalisysInfo(fileAnalisysInfo);
+		projectDto.setAnalysisInfo(fileAnalysisInfo);
 
 		mode.clear();
 		mode.addAttribute("projectDto", projectDto);
