@@ -3,31 +3,26 @@ package org.flyJenkins.analysis.strategy.model;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
-@XmlRootElement(name = "project", namespace="http://maven.apache.org/POM/4.0.0")
-@XmlAccessorType(XmlAccessType.FIELD)
-public class PomCommonDto {
+@XStreamAlias("pomAnalysis")
+public class PomAnalysisDto {
 
-	@XmlElement(name="modelVersion")
 	private String modelVersion;
-	
+
 	private String groupId;
-	
+
 	private String artifactId;
-	
+
 	private String name;
 
 	private String packaging;
-	
+
 	private String version;
-	
+
 	private HashMap<String, String> properties;
-	
-	private List<PomDependencyDto> dependency;
+
+	private List<HashMap<String, String>> dependency;
 
 	public String getModelVersion() {
 		return modelVersion;
@@ -85,11 +80,11 @@ public class PomCommonDto {
 		this.properties = properties;
 	}
 
-	public List<PomDependencyDto> getDependency() {
+	public List<HashMap<String, String>> getDependency() {
 		return dependency;
 	}
 
-	public void setDependency(List<PomDependencyDto> dependency) {
+	public void setDependency(List<HashMap<String, String>> dependency) {
 		this.dependency = dependency;
 	}
 }
