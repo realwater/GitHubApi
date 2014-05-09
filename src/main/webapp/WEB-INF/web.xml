@@ -46,4 +46,17 @@
 		<url-pattern>/*</url-pattern>
 	</servlet-mapping>
 
+	<error-page>
+    	<error-code>400</error-code>
+    	<location>/errors/400.json</location>
+  	</error-page>
+  	<error-page>
+    	<error-code>404</error-code>
+    	<location>/errors/404.json</location>
+  	</error-page>
+  	<error-page>
+    	<error-code>500</error-code>
+    	<location>/errors/500.json</location>
+  	</error-page>
+  
 </web-app>
