@@ -17,7 +17,7 @@ import org.tmatesoft.svn.core.io.SVNRepository;
 import org.tmatesoft.svn.core.io.SVNRepositoryFactory;
 import org.tmatesoft.svn.core.wc.SVNWCUtil;
 
-public class RepoAnalysisServiceImpl implements RepoAnalysisService {
+public class SvnRepoAnalysisServiceImpl implements SvnRepoAnalysisService {
 
 	private List<FileAnalysisDto> fileInfoList;
 

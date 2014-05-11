@@ -6,7 +6,7 @@ import org.flyJenkins.analysis.model.FileAnalysisDto;
 import org.flyJenkins.analysis.model.RepoAnalysisDto;
 import org.tmatesoft.svn.core.io.SVNRepository;
 
-public interface RepoAnalysisService {
+public interface SvnRepoAnalysisService {
 
 	public List<FileAnalysisDto> getRepoAnalisysFileList(RepoAnalysisDto repoAnalysisDto);
 

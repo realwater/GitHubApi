@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.flyJenkins.analysis.model.FileAnalysisDto;
 import org.flyJenkins.analysis.model.RepoAnalysisDto;
 import org.flyJenkins.analysis.service.FileAnalysisService;
-import org.flyJenkins.analysis.service.RepoAnalysisService;
+import org.flyJenkins.analysis.service.SvnRepoAnalysisService;
 import org.flyJenkins.gitHub.model.ProjectDto;
 import org.flyJenkins.gitHub.model.ReposDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ import com.thoughtworks.xstream.XStream;
 public class RepositoryController {
 
 	@Autowired
-	private RepoAnalysisService repoAnalysisServiceImpl;
+	private SvnRepoAnalysisService svnRepoAnalysisServiceImpl;
 
 	@Autowired
 	private FileAnalysisService fileAnalysisServiceImpl;
@@ -60,12 +60,12 @@ public class RepositoryController {
 		repoUrl.append("/");
 		repoUrl.append(repo);
 
-		RepoAnalysisDto repoAnalisysCommand = new RepoAnalysisDto();
-		repoAnalisysCommand.setRepoUrl(repoUrl.toString());
-		repoAnalisysCommand.setRepoPath("/trunk");
+		RepoAnalysisDto repoAnalysisDto = new RepoAnalysisDto();
+		repoAnalysisDto.setRepoUrl(repoUrl.toString());
+		repoAnalysisDto.setRepoPath("/trunk");
 
 		// 저장소에서 파일 목록 뽑아오기
-		List<FileAnalysisDto> fileInfoList = repoAnalysisServiceImpl.getRepoAnalisysFileList(repoAnalisysCommand);
+		List<FileAnalysisDto> fileInfoList = svnRepoAnalysisServiceImpl.getRepoAnalisysFileList(repoAnalysisDto);
 
 		// 파일 목록 리스트 분석
 		HashMap<String, Object> fileAnalysisInfo = fileAnalysisServiceImpl.getFileAnalisysResult(fileInfoList);
