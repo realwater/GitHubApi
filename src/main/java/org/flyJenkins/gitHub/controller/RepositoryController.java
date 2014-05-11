@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.flyJenkins.analysis.model.FileAnalysisDto;
 import org.flyJenkins.analysis.model.RepoAnalysisDto;
 import org.flyJenkins.analysis.service.FileAnalysisService;
-import org.flyJenkins.analysis.service.SvnRepoAnalysisService;
+import org.flyJenkins.analysis.service.RepoAnalysisService;
 import org.flyJenkins.gitHub.model.ProjectDto;
 import org.flyJenkins.gitHub.model.ReposDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,10 @@ import com.thoughtworks.xstream.XStream;
 public class RepositoryController {
 
 	@Autowired
-	private SvnRepoAnalysisService svnRepoAnalysisServiceImpl;
+	private RepoAnalysisService svnRepoAnalysisServiceImpl;
+	
+	@Autowired
+	private RepoAnalysisService gitRepoAnalysisServiceImpl;
 
 	@Autowired
 	private FileAnalysisService fileAnalysisServiceImpl;
@@ -40,12 +43,43 @@ public class RepositoryController {
 	private XStream xstreamManager;
 
 	/**
-	 * 저장소 분석
+	 * SVN 저장소 분석
 	 * 2014.04.16
 	 * @author realwater
 	 */
-	@RequestMapping(value="/{owner}/{repo}/analysis", method=RequestMethod.GET)
-	public void analysisRepository(
+	@RequestMapping(value="/{projectName}/{svnUrl}/{path}/svn/analysis", method=RequestMethod.GET)
+	public void svnAnalysisInfo(
+			@PathVariable("projectName") String projectName,
+			@PathVariable("svnUrl") String svnUrl,
+			@PathVariable("path") String path,
+			HttpServletRequest request,
+			ModelMap mode) {
+
+		ProjectDto projectDto = new ProjectDto();
+
+		RepoAnalysisDto repoAnalysisDto = new RepoAnalysisDto();
+		repoAnalysisDto.setRepoUrl(svnUrl);
+		repoAnalysisDto.setRepoPath("/"+path);
+
+		// 저장소에서 파일 목록 뽑아오기
+		List<FileAnalysisDto> fileInfoList = svnRepoAnalysisServiceImpl.getRepoAnalisysFileList(repoAnalysisDto);
+
+		// 파일 목록 리스트 분석
+		HashMap<String, Object> fileAnalysisInfo = fileAnalysisServiceImpl.getFileAnalisysResult(fileInfoList);
+		projectDto.setProjectName(projectName);
+		projectDto.setAnalysisInfo(fileAnalysisInfo);
+
+		mode.clear();
+		mode.addAttribute("projectDto", projectDto);
+	}
+	
+	/**
+	 * GIT 저장소 분석
+	 * 2014.05.11
+	 * @author realwater
+	 */
+	@RequestMapping(value="/{owner}/{repo}/git/analysis", method=RequestMethod.GET)
+	public void gitAnalysisInfo(
 			@PathVariable("owner") String owner,
 			@PathVariable("repo") String repo,
 			HttpServletRequest request,
@@ -54,18 +88,18 @@ public class RepositoryController {
 		ProjectDto projectDto = new ProjectDto();
 
 		StringBuffer repoUrl = new StringBuffer();
-		repoUrl.append("https://github.com");
+		repoUrl.append("https://api.github.com");
 		repoUrl.append("/");
 		repoUrl.append(owner);
 		repoUrl.append("/");
 		repoUrl.append(repo);
+		repoUrl.append("/contents");
 
 		RepoAnalysisDto repoAnalysisDto = new RepoAnalysisDto();
 		repoAnalysisDto.setRepoUrl(repoUrl.toString());
-		repoAnalysisDto.setRepoPath("/trunk");
 
 		// 저장소에서 파일 목록 뽑아오기
-		List<FileAnalysisDto> fileInfoList = svnRepoAnalysisServiceImpl.getRepoAnalisysFileList(repoAnalysisDto);
+		List<FileAnalysisDto> fileInfoList = gitRepoAnalysisServiceImpl.getRepoAnalisysFileList(repoAnalysisDto);
 
 		// 파일 목록 리스트 분석
 		HashMap<String, Object> fileAnalysisInfo = fileAnalysisServiceImpl.getFileAnalisysResult(fileInfoList);
@@ -75,6 +109,7 @@ public class RepositoryController {
 		mode.clear();
 		mode.addAttribute("projectDto", projectDto);
 	}
+	
 
 	/**
 	 * 저장소 디렉토리 정보
