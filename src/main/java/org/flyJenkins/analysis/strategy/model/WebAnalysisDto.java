@@ -8,7 +8,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias("webAnalysis")
 public class WebAnalysisDto {
 
-	private String version;
+	private String servletVersion;
 
 	private List<WebFilterDto> filter;
 
@@ -18,12 +18,12 @@ public class WebAnalysisDto {
 
 	private List<HashMap<String, String>> servletmapping;
 
-	public String getVersion() {
-		return version;
+	public String getServletVersion() {
+		return servletVersion;
 	}
 
-	public void setVersion(String version) {
-		this.version = version;
+	public void setServletVersion(String servletVersion) {
+		this.servletVersion = servletVersion;
 	}
 
 	public List<WebFilterDto> getFilter() {

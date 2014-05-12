@@ -17,7 +17,11 @@ import org.tmatesoft.svn.core.io.SVNRepository;
 import org.tmatesoft.svn.core.io.SVNRepositoryFactory;
 import org.tmatesoft.svn.core.wc.SVNWCUtil;
 
-public class RepoAnalysisServiceImpl implements RepoAnalysisService {
+/**
+ * Svn 저장소 파일 추출 Service
+ * @author realwater
+ */
+public class SvnRepoAnalysisServiceImpl implements RepoAnalysisService {
 
 	private List<FileAnalysisDto> fileInfoList;
 
@@ -48,7 +52,6 @@ public class RepoAnalysisServiceImpl implements RepoAnalysisService {
 	/**
 	 * 저장소 디렉토리 하위 목록 로드
 	 */
-	@Override
 	public void repositoryDirectoryLoading(SVNRepository repository, String path) {
 
 		Collection<?> entries;

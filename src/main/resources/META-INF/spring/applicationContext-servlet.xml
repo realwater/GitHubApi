@@ -13,7 +13,7 @@
 	<mvc:annotation-driven />
 	
 	<!-- annotation 기반 스프링 빈 등록 컴포넌트 스캔 -->
-	<context:component-scan base-package="org.flyJenkins.gitHub.controller" />
+	<context:component-scan base-package="org.flyJenkins" />
 		
 	<!-- View Negotiating 설정  -->
 	<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">		

@@ -103,8 +103,9 @@ public class POMAnalysisStrategy extends FileAnalysisStrategy {
 			}
 		}
 
-		HashMap<String, Object> resultAnalisysMap = new HashMap<String, Object>();
-		resultAnalisysMap.put("POM", pomAnalysisDto);
-		return resultAnalisysMap;
+
+		HashMap<String, Object> resultAnalysisMap = new HashMap<String, Object>();
+		resultAnalysisMap.put("POM", pomAnalysisDto);
+		return resultAnalysisMap;
 	}
 }
