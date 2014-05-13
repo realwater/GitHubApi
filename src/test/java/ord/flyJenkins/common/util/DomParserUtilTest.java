@@ -2,29 +2,20 @@ package ord.flyJenkins.common.util;
 
 
 import java.io.ByteArrayOutputStream;
-import java.io.StringReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
-
 import org.flyJenkins.analysis.strategy.model.PomAnalysisDto;
 import org.flyJenkins.analysis.strategy.model.WebAnalysisDto;
-<<<<<<< HEAD
-=======
 import org.flyJenkins.analysis.strategy.model.WebFilterDto;
 import org.flyJenkins.analysis.strategy.model.WebServletDto;
->>>>>>> branch 'master' of https://github.com/realwater/GitHubApi.git
 import org.flyJenkins.common.util.CommonRegexUtil;
 import org.flyJenkins.common.util.DomParserUtil;
 import org.junit.Ignore;
@@ -36,12 +27,10 @@ import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNURL;
 import org.tmatesoft.svn.core.io.SVNRepository;
 import org.tmatesoft.svn.core.io.SVNRepositoryFactory;
-import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"classpath*:META-INF/spring/applicationContext*"})
