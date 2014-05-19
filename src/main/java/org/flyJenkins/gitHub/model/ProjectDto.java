@@ -1,9 +1,6 @@
 package org.flyJenkins.gitHub.model;
 
-import java.util.HashMap;
-
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.junit.Before;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
@@ -12,13 +9,14 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 public class ProjectDto {
 
 	private String projectName;
-
-	HashMap<String, Object> analysisInfo;
-
-	@Before
-	public void init() {
-		this.analysisInfo = new HashMap<String, Object>();
-	}
+	
+	private String analysisChance;
+	
+	private String language;
+	
+	private String projectType;
+	
+	private String commitSha;
 
 	public String getProjectName() {
 		return projectName;
@@ -28,11 +26,35 @@ public class ProjectDto {
 		this.projectName = projectName;
 	}
 
-	public HashMap<String, Object> getAnalysisInfo() {
-		return analysisInfo;
+	public String getAnalysisChance() {
+		return analysisChance;
 	}
 
-	public void setAnalysisInfo(HashMap<String, Object> analysisInfo) {
-		this.analysisInfo = analysisInfo;
+	public void setAnalysisChance(String analysisChance) {
+		this.analysisChance = analysisChance;
+	}
+
+	public String getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(String language) {
+		this.language = language;
+	}
+
+	public String getProjectType() {
+		return projectType;
+	}
+
+	public void setProjectType(String projectType) {
+		this.projectType = projectType;
+	}
+
+	public String getCommitSha() {
+		return commitSha;
+	}
+
+	public void setCommitSha(String commitSha) {
+		this.commitSha = commitSha;
 	}
 }

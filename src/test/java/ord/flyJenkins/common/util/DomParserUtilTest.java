@@ -21,6 +21,7 @@ import org.flyJenkins.common.util.DomParserUtil;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.tmatesoft.svn.core.SVNException;
@@ -32,10 +33,15 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.thoughtworks.xstream.XStream;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"classpath*:META-INF/spring/applicationContext*"})
 public class DomParserUtilTest {
 
+	@Autowired
+	private XStream xstreamManager;
+	
 	/**
 	 * POM 분석 Test
 	 * @throws SVNException
@@ -128,7 +134,9 @@ public class DomParserUtilTest {
 			}
 		}
 
-		System.out.println(pomAnalysisDto);
+		String resultJson = xstreamManager.toXML(pomAnalysisDto);
+		
+		System.out.println(resultJson);
 	}
 
 	/**
@@ -136,7 +144,7 @@ public class DomParserUtilTest {
 	 * @throws SVNException
 	 */
 	@Test
-	@Ignore
+	//@Ignore
 	public void testWebParsing() throws SVNException {
 		SVNURL svnUrl = SVNURL.parseURIEncoded("https://github.com/realwater/GitHubApi");
 		SVNRepository repository = SVNRepositoryFactory.create(svnUrl, null);
@@ -249,7 +257,9 @@ public class DomParserUtilTest {
 			}
 		}
 
-		System.out.println(webAnalysisDto);
+		String resultJson = xstreamManager.toXML(webAnalysisDto);
+		
+		System.out.println(resultJson);
 	}
 
 	@Test

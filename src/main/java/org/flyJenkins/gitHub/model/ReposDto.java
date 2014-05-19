@@ -24,6 +24,8 @@ public class ReposDto {
 	private String type;
 	
 	private String url;
+	
+	private String language;
 
 	public String getName() {
 		return name;
@@ -88,5 +90,13 @@ public class ReposDto {
 
 	public void setUrl(String url) {
 		this.url = url;
+	}
+
+	public String getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(String language) {
+		this.language = language;
 	}
 }

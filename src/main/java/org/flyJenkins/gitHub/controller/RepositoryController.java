@@ -1,11 +1,7 @@
 package org.flyJenkins.gitHub.controller;
 
-import java.util.HashMap;
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 
-import org.flyJenkins.analysis.model.FileAnalysisDto;
 import org.flyJenkins.analysis.model.RepoAnalysisDto;
 import org.flyJenkins.analysis.service.FileAnalysisService;
 import org.flyJenkins.analysis.service.RepoAnalysisService;
@@ -41,37 +37,6 @@ public class RepositoryController {
 
 	@Autowired
 	private XStream xstreamManager;
-
-	/**
-	 * SVN 저장소 분석
-	 * 2014.04.16
-	 * @author realwater
-	 */
-	@RequestMapping(value="/{projectName}/{svnUrl}/{path}/svn/analysis", method=RequestMethod.GET)
-	public void svnAnalysisInfo(
-			@PathVariable("projectName") String projectName,
-			@PathVariable("svnUrl") String svnUrl,
-			@PathVariable("path") String path,
-			HttpServletRequest request,
-			ModelMap mode) {
-
-		ProjectDto projectDto = new ProjectDto();
-
-		RepoAnalysisDto repoAnalysisDto = new RepoAnalysisDto();
-		repoAnalysisDto.setRepoUrl(svnUrl);
-		repoAnalysisDto.setRepoPath("/"+path);
-
-		// 저장소에서 파일 목록 뽑아오기
-		List<FileAnalysisDto> fileInfoList = svnRepoAnalysisServiceImpl.getRepoAnalisysFileList(repoAnalysisDto);
-
-		// 파일 목록 리스트 분석
-		HashMap<String, Object> fileAnalysisInfo = fileAnalysisServiceImpl.getFileAnalisysResult(fileInfoList);
-		projectDto.setProjectName(projectName);
-		projectDto.setAnalysisInfo(fileAnalysisInfo);
-
-		mode.clear();
-		mode.addAttribute("projectDto", projectDto);
-	}
 	
 	/**
 	 * GIT 저장소 분석
@@ -99,12 +64,10 @@ public class RepositoryController {
 		repoAnalysisDto.setRepoUrl(repoUrl.toString());
 
 		// 저장소에서 파일 목록 뽑아오기
-		List<FileAnalysisDto> fileInfoList = gitRepoAnalysisServiceImpl.getRepoAnalisysFileList(repoAnalysisDto);
+		//List<FileAnalysisDto> fileInfoList = gitRepoAnalysisServiceImpl.getRepoAnalisysFileList(repoAnalysisDto);
 
 		// 파일 목록 리스트 분석
-		HashMap<String, Object> fileAnalysisInfo = fileAnalysisServiceImpl.getFileAnalisysResult(fileInfoList);
-		projectDto.setProjectName(repo);
-		projectDto.setAnalysisInfo(fileAnalysisInfo);
+		//projectDto.setProjectName(repo);
 
 		mode.clear();
 		mode.addAttribute("projectDto", projectDto);
