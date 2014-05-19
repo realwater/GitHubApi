@@ -44,5 +44,6 @@
  	
  	<bean id="fileAnalysisServiceImpl" class="org.flyJenkins.analysis.service.FileAnalysisServiceImpl" />	
  	
+ 	<bean id="gitHubRepoManagerImpl" class="org.flyJenkins.github.service.GitHubRepoManagerImpl" />
  		
 </beans>

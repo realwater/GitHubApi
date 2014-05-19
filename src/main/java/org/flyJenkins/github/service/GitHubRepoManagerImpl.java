@@ -1,12 +1,12 @@
-package org.flyJenkins.gitHub.service;
+package org.flyJenkins.github.service;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.flyJenkins.gitHub.command.GitHubRepoCmd;
-import org.flyJenkins.gitHub.model.CommitDto;
-import org.flyJenkins.gitHub.model.ReposDto;
-import org.flyJenkins.gitHub.model.SearchCodeDto;
+import org.flyJenkins.github.command.GitHubRepoCmd;
+import org.flyJenkins.github.model.CommitDto;
+import org.flyJenkins.github.model.ReposDto;
+import org.flyJenkins.github.model.SearchCodeDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -43,22 +43,19 @@ public class GitHubRepoManagerImpl implements GitHubRepoManager {
 	 * @param gitHubRepoCmd
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
-	public List<SearchCodeDto> getSearchFileCode(GitHubRepoCmd gitHubRepoCmd) {
+	public SearchCodeDto getSearchFileCode(GitHubRepoCmd gitHubRepoCmd) {
 		String url = "https://api.github.com/search/code?q=pom+in:file+language:xml+repo:realwater/GitHubApi";
-		SearchCodeDto[] searchCodeDtos = null;
-		List<SearchCodeDto> searchCodeDtoList = new ArrayList<SearchCodeDto>();
+		SearchCodeDto searchCodeDto = new SearchCodeDto();
 		
 		try {
 			// 확장자가 있으면 Object로 호출
-			searchCodeDtos = restTemplate.getForObject(url, SearchCodeDto[].class);
-			searchCodeDtoList = Arrays.asList(searchCodeDtos);
+			searchCodeDto = restTemplate.getForObject(url, SearchCodeDto.class);
 		} catch (final HttpClientErrorException e) {
 		    e.getResponseBodyAsString();
 		}
 		
-		return searchCodeDtoList;
+		return searchCodeDto;
 	}
 	
 	/**

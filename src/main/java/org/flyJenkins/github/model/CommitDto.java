@@ -1,4 +1,4 @@
-package org.flyJenkins.gitHub.model;
+package org.flyJenkins.github.model;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 

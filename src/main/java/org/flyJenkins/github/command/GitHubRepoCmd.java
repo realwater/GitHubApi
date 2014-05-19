@@ -1,4 +1,4 @@
-package org.flyJenkins.gitHub.command;
+package org.flyJenkins.github.command;
 
 public class GitHubRepoCmd {
 

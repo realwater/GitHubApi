@@ -1,12 +1,12 @@
-package org.flyJenkins.gitHub.controller;
+package org.flyJenkins.github.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.flyJenkins.analysis.model.RepoAnalysisDto;
 import org.flyJenkins.analysis.service.FileAnalysisService;
 import org.flyJenkins.analysis.service.RepoAnalysisService;
-import org.flyJenkins.gitHub.model.ProjectDto;
-import org.flyJenkins.gitHub.model.ReposDto;
+import org.flyJenkins.github.model.ProjectDto;
+import org.flyJenkins.github.model.ReposDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;

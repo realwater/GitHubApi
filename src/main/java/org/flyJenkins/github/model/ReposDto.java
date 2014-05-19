@@ -1,8 +1,9 @@
-package org.flyJenkins.gitHub.model;
+package org.flyJenkins.github.model;
 
 import org.apache.commons.codec.binary.Base64;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -12,7 +13,7 @@ public class ReposDto {
 	private String name;
 
 	private String path;
-
+	
 	private String sha;
 
 	private String size;
@@ -26,6 +27,9 @@ public class ReposDto {
 	private String url;
 	
 	private String language;
+	
+	@JsonProperty(value="html_url")
+	private String htmlUrl;
 
 	public String getName() {
 		return name;
@@ -98,5 +102,13 @@ public class ReposDto {
 
 	public void setLanguage(String language) {
 		this.language = language;
+	}
+
+	public String getHtmlUrl() {
+		return htmlUrl;
+	}
+
+	public void setHtmlUrl(String htmlUrl) {
+		this.htmlUrl = htmlUrl;
 	}
 }

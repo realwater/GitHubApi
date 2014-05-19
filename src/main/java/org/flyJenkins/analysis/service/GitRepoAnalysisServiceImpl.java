@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.flyJenkins.analysis.model.FileAnalysisDto;
 import org.flyJenkins.analysis.model.RepoAnalysisDto;
-import org.flyJenkins.gitHub.model.ReposDto;
+import org.flyJenkins.github.model.ReposDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;

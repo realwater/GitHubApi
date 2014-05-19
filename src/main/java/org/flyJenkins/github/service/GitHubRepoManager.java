@@ -1,11 +1,11 @@
-package org.flyJenkins.gitHub.service;
+package org.flyJenkins.github.service;
 
 import java.util.List;
 
-import org.flyJenkins.gitHub.command.GitHubRepoCmd;
-import org.flyJenkins.gitHub.model.CommitDto;
-import org.flyJenkins.gitHub.model.ReposDto;
-import org.flyJenkins.gitHub.model.SearchCodeDto;
+import org.flyJenkins.github.command.GitHubRepoCmd;
+import org.flyJenkins.github.model.CommitDto;
+import org.flyJenkins.github.model.ReposDto;
+import org.flyJenkins.github.model.SearchCodeDto;
 
 public interface GitHubRepoManager {
 	
@@ -21,7 +21,7 @@ public interface GitHubRepoManager {
 	 * @param gitHubRepoCmd
 	 * @return
 	 */
-	public List<SearchCodeDto> getSearchFileCode(GitHubRepoCmd gitHubRepoCmd);
+	public SearchCodeDto getSearchFileCode(GitHubRepoCmd gitHubRepoCmd);
 		
 	/**
 	 * 프로젝트 커밋 정보 조회

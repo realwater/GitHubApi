@@ -2,7 +2,7 @@ package org.flyJenkins.cache;
 
 import java.util.Set;
 
-import org.flyJenkins.gitHub.model.ReposDto;
+import org.flyJenkins.github.model.ReposDto;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,14 +1,9 @@
-package org.flyJenkins.gitHub.model;
-
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+package org.flyJenkins.github.model;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-@XStreamAlias("commit")
 @JsonRootName(value="items")
-public class SearchCodeDto {
+public class SearchItemDto {
 
 	private String name;
 	
