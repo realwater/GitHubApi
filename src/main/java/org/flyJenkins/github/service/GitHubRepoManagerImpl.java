@@ -8,6 +8,7 @@ import org.flyJenkins.github.model.CommitDto;
 import org.flyJenkins.github.model.ReposDto;
 import org.flyJenkins.github.model.SearchCodeDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
@@ -18,6 +19,12 @@ public class GitHubRepoManagerImpl implements GitHubRepoManager {
 	@Autowired
 	private RestTemplate restTemplate;
 	
+	@Value("#{github['api.repos.url']}")
+	private String gitApiReposUrl;
+	
+	@Value("#{github['api.search.url']}")
+	private String gitApiSearchUrl;
+	
 	/**
 	 * 프로젝트 정보 조회
 	 * @param gitHubRepoCmd
@@ -25,12 +32,15 @@ public class GitHubRepoManagerImpl implements GitHubRepoManager {
 	 */
 	@Override
 	public ReposDto getProjectInfo(GitHubRepoCmd gitHubRepoCmd) {
-		String url = "https://api.github.com/repos/realwater/GitHubApi";
+		StringBuffer sbApiUrl = new StringBuffer();
+		sbApiUrl.append(gitApiReposUrl);
+		sbApiUrl.append("/"+gitHubRepoCmd.getOwner());
+		sbApiUrl.append("/"+gitHubRepoCmd.getRepo());
+		
 		ReposDto repos = new ReposDto();
-
 		try {
 			// 확장자가 있으면 Object로 호출
-			repos = restTemplate.getForObject(url, ReposDto.class);
+			repos = restTemplate.getForObject(sbApiUrl.toString(), ReposDto.class);
 		} catch (final HttpClientErrorException e) {
 		    e.getResponseBodyAsString();
 		}
@@ -45,12 +55,18 @@ public class GitHubRepoManagerImpl implements GitHubRepoManager {
 	 */
 	@Override
 	public SearchCodeDto getSearchFileCode(GitHubRepoCmd gitHubRepoCmd) {
-		String url = "https://api.github.com/search/code?q=pom+in:file+language:xml+repo:realwater/GitHubApi";
-		SearchCodeDto searchCodeDto = new SearchCodeDto();
+		StringBuffer sbApiUrl = new StringBuffer();
+		sbApiUrl.append(gitApiSearchUrl);
+		sbApiUrl.append("/code");
+		sbApiUrl.append("?q="+gitHubRepoCmd.getQuery());
+		sbApiUrl.append(" in:file");
+		sbApiUrl.append(" language:"+gitHubRepoCmd.getLanguage());
+		sbApiUrl.append(" repo:"+gitHubRepoCmd.getOwner()+"/"+gitHubRepoCmd.getRepo());
 		
+		SearchCodeDto searchCodeDto = new SearchCodeDto();
 		try {
 			// 확장자가 있으면 Object로 호출
-			searchCodeDto = restTemplate.getForObject(url, SearchCodeDto.class);
+			searchCodeDto = restTemplate.getForObject(sbApiUrl.toString(), SearchCodeDto.class);
 		} catch (final HttpClientErrorException e) {
 		    e.getResponseBodyAsString();
 		}
@@ -66,13 +82,17 @@ public class GitHubRepoManagerImpl implements GitHubRepoManager {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<CommitDto> getProjectCommitInfo(GitHubRepoCmd gitHubRepoCmd) {
-		String url = "https://api.github.com/repos/realwater/GitHubApi/commits";
+		StringBuffer sbApiUrl = new StringBuffer();
+		sbApiUrl.append(gitApiReposUrl);
+		sbApiUrl.append("/"+gitHubRepoCmd.getOwner());
+		sbApiUrl.append("/"+gitHubRepoCmd.getRepo());
+		sbApiUrl.append("/commits");
+		
 		CommitDto[] commitDtos = null;
 		List<CommitDto> commitDtoList = new ArrayList<CommitDto>();
-		
 		try {
 			// 확장자가 있으면 Object로 호출
-			commitDtos = restTemplate.getForObject(url, CommitDto[].class);
+			commitDtos = restTemplate.getForObject(sbApiUrl.toString(), CommitDto[].class);
 		    commitDtoList = Arrays.asList(commitDtos);
 		} catch (final HttpClientErrorException e) {
 		    e.getResponseBodyAsString();

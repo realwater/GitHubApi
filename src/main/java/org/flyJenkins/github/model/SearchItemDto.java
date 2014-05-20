@@ -1,7 +1,10 @@
 package org.flyJenkins.github.model;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
 import com.fasterxml.jackson.annotation.JsonRootName;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonRootName(value="items")
 public class SearchItemDto {
 

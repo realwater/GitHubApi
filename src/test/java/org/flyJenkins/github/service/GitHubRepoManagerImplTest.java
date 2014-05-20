@@ -1,5 +1,6 @@
 package org.flyJenkins.github.service;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import org.flyJenkins.github.command.GitHubRepoCmd;
@@ -20,7 +21,7 @@ public class GitHubRepoManagerImplTest {
 	
 	@Autowired
 	private GitHubRepoManager gitHubRepoManager;
-
+	
 	/**
 	 * 프로젝트 정보 조회
 	 * @param gitHubRepoCmd
@@ -30,6 +31,9 @@ public class GitHubRepoManagerImplTest {
 	@Test
 	public void getProjectInfoTest() {
 		GitHubRepoCmd gitHubRepoCmd= new GitHubRepoCmd();
+		gitHubRepoCmd.setOwner("realwater");
+		gitHubRepoCmd.setRepo("GitHubApi");
+		
 		ReposDto reposDto = gitHubRepoManager.getProjectInfo(gitHubRepoCmd);
 		Assert.assertNotNull(reposDto);
 	}
@@ -38,11 +42,17 @@ public class GitHubRepoManagerImplTest {
 	 * 프로젝트 내 코드 검색
 	 * @param gitHubRepoCmd
 	 * @return
+	 * @throws UnsupportedEncodingException 
 	 */
 	@Ignore
 	@Test
 	public void getSearchFileCodeTest() {
 		GitHubRepoCmd gitHubRepoCmd= new GitHubRepoCmd();
+		gitHubRepoCmd.setQuery("pom");
+		gitHubRepoCmd.setLanguage("xml");
+		gitHubRepoCmd.setOwner("realwater");
+		gitHubRepoCmd.setRepo("GitHubApi");
+		
 		SearchCodeDto searchCodeDto = gitHubRepoManager.getSearchFileCode(gitHubRepoCmd);
 		Assert.assertNotNull(searchCodeDto);
 	}
@@ -56,6 +66,9 @@ public class GitHubRepoManagerImplTest {
 	@Test
 	public void getProjectCommitInfoTest() {
 		GitHubRepoCmd gitHubRepoCmd= new GitHubRepoCmd();
+		gitHubRepoCmd.setOwner("realwater");
+		gitHubRepoCmd.setRepo("GitHubApi");
+		
 		List<CommitDto> commitDtoList = gitHubRepoManager.getProjectCommitInfo(gitHubRepoCmd);
 		Assert.assertNotNull(commitDtoList);
 	}

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+	<comment>GitHub 관련 설정</comment>
+	<entry key="api.url">http://api.github.com</entry>
+	<entry key="api.repos.url">https://api.github.com/repos</entry>
+	<entry key="api.search.url">https://api.github.com/search</entry>
+</properties>

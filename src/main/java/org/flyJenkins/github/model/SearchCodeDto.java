@@ -2,25 +2,17 @@ package org.flyJenkins.github.model;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 @XStreamAlias("searchCode")
 public class SearchCodeDto {
 	
-	@JsonProperty(value="total_count")
-	private int totalcount;
+	private int total_count;
 	
-	@JsonProperty(value="items")
 	private List<SearchItemDto> items;
-
-	public int getTotalcount() {
-		return totalcount;
-	}
-
-	public void setTotalcount(int totalcount) {
-		this.totalcount = totalcount;
-	}
 
 	public List<SearchItemDto> getItems() {
 		return items;
@@ -28,5 +20,13 @@ public class SearchCodeDto {
 
 	public void setItems(List<SearchItemDto> items) {
 		this.items = items;
+	}
+
+	public int getTotal_count() {
+		return total_count;
+	}
+
+	public void setTotal_count(int total_count) {
+		this.total_count = total_count;
 	}
 }
