@@ -1,12 +1,15 @@
 package org.flyJenkins.github.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
-import org.flyJenkins.analysis.model.RepoAnalysisDto;
-import org.flyJenkins.analysis.service.FileAnalysisService;
-import org.flyJenkins.analysis.service.RepoAnalysisService;
+import org.flyJenkins.github.command.GitHubRepoCmd;
+import org.flyJenkins.github.model.CommitDto;
 import org.flyJenkins.github.model.ProjectDto;
 import org.flyJenkins.github.model.ReposDto;
+import org.flyJenkins.github.model.SearchCodeDto;
+import org.flyJenkins.github.service.GitHubRepoManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -24,20 +27,14 @@ import com.thoughtworks.xstream.XStream;
 public class RepositoryController {
 
 	@Autowired
-	private RepoAnalysisService svnRepoAnalysisServiceImpl;
-	
-	@Autowired
-	private RepoAnalysisService gitRepoAnalysisServiceImpl;
-
-	@Autowired
-	private FileAnalysisService fileAnalysisServiceImpl;
+	private GitHubRepoManager gitHubRepoManager;
 
 	@Autowired
 	private RestTemplate restTemplate;
 
 	@Autowired
 	private XStream xstreamManager;
-	
+
 	/**
 	 * GIT 저장소 분석
 	 * 2014.05.11
@@ -51,28 +48,63 @@ public class RepositoryController {
 			ModelMap mode) {
 
 		ProjectDto projectDto = new ProjectDto();
+		projectDto.setProjectName(repo);
 
-		StringBuffer repoUrl = new StringBuffer();
-		repoUrl.append("https://api.github.com");
-		repoUrl.append("/");
-		repoUrl.append(owner);
-		repoUrl.append("/");
-		repoUrl.append(repo);
-		repoUrl.append("/contents");
+		// 1. 프로젝트 정보 조회
+		GitHubRepoCmd gitHubRepoCmd= new GitHubRepoCmd();
+		gitHubRepoCmd.setOwner(owner);
+		gitHubRepoCmd.setRepo(repo);
 
-		RepoAnalysisDto repoAnalysisDto = new RepoAnalysisDto();
-		repoAnalysisDto.setRepoUrl(repoUrl.toString());
+		ReposDto reposDto = gitHubRepoManager.getProjectInfo(gitHubRepoCmd);
 
-		// 저장소에서 파일 목록 뽑아오기
-		//List<FileAnalysisDto> fileInfoList = gitRepoAnalysisServiceImpl.getRepoAnalisysFileList(repoAnalysisDto);
+		// 2. 프로젝트 내 타입 조회
+		if (!reposDto.getName().equals(null)) {
+			String projectLanguage = reposDto.getLanguage().toUpperCase();
+			projectDto.setLanguage(projectLanguage);
 
-		// 파일 목록 리스트 분석
-		//projectDto.setProjectName(repo);
+			SearchCodeDto searchCodeDto = null;
+			if (projectLanguage.equals("JAVA")) {
+				gitHubRepoCmd.setQuery("pom");
+				gitHubRepoCmd.setLanguage("xml");
+
+				// Project가 메이븐인지 체크
+				searchCodeDto = gitHubRepoManager.getSearchFileCode(gitHubRepoCmd);
+				if (searchCodeDto.getTotal_count() > 0) {
+					projectDto.setAnalysisChance("Y");
+					projectDto.setBuildType("maven");
+
+					// Project가 Spring 인지 체크
+					gitHubRepoCmd.setQuery("application");
+					gitHubRepoCmd.setLanguage("xml");
+
+					searchCodeDto = gitHubRepoManager.getSearchFileCode(gitHubRepoCmd);
+					if (searchCodeDto.getTotal_count() > 0) {
+						projectDto.setProjectType("spring");
+					}
+				}
+			} else if (projectLanguage.equals("JAVASCRIPT")) {
+				// Project가 node.js 인지 체크
+				gitHubRepoCmd.setQuery("package");
+				gitHubRepoCmd.setLanguage("json");
+
+				searchCodeDto = gitHubRepoManager.getSearchFileCode(gitHubRepoCmd);
+				if (searchCodeDto.getTotal_count() > 0) {
+					projectDto.setAnalysisChance("Y");
+					projectDto.setProjectType("node.js");
+				}
+			}
+
+			// 최신 리비전 sha 정보가 있으면 저장한다.
+			List<CommitDto> commitDtoList = gitHubRepoManager.getProjectCommitInfo(gitHubRepoCmd);
+			if (commitDtoList.isEmpty()) {
+				projectDto.setCommitSha(commitDtoList.get(0).getSha());
+			}
+		}
 
 		mode.clear();
 		mode.addAttribute("projectDto", projectDto);
 	}
-	
+
 
 	/**
 	 * 저장소 디렉토리 정보

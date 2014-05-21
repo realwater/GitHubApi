@@ -9,13 +9,15 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 public class ProjectDto {
 
 	private String projectName;
-	
+
 	private String analysisChance;
-	
+
 	private String language;
-	
+
+	private String buildType;
+
 	private String projectType;
-	
+
 	private String commitSha;
 
 	public String getProjectName() {
@@ -40,6 +42,14 @@ public class ProjectDto {
 
 	public void setLanguage(String language) {
 		this.language = language;
+	}
+
+	public String getBuildType() {
+		return buildType;
+	}
+
+	public void setBuildType(String buildType) {
+		this.buildType = buildType;
 	}
 
 	public String getProjectType() {
