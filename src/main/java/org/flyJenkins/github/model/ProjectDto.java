@@ -10,7 +10,7 @@ public class ProjectDto {
 
 	private String projectName;
 
-	private String analysisChance;
+	private String analysisChance = "N";
 
 	private String language;
 

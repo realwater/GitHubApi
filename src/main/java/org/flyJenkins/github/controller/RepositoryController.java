@@ -84,7 +84,7 @@ public class RepositoryController {
 				}
 			} else if (projectLanguage.equals("JAVASCRIPT")) {
 				// Project가 node.js 인지 체크
-				gitHubRepoCmd.setQuery("package");
+				gitHubRepoCmd.setQuery("version");
 				gitHubRepoCmd.setLanguage("json");
 
 				searchCodeDto = gitHubRepoManager.getSearchFileCode(gitHubRepoCmd);
@@ -96,7 +96,7 @@ public class RepositoryController {
 
 			// 최신 리비전 sha 정보가 있으면 저장한다.
 			List<CommitDto> commitDtoList = gitHubRepoManager.getProjectCommitInfo(gitHubRepoCmd);
-			if (commitDtoList.isEmpty()) {
+			if (!commitDtoList.isEmpty()) {
 				projectDto.setCommitSha(commitDtoList.get(0).getSha());
 			}
 		}

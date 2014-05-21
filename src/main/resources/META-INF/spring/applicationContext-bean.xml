@@ -38,6 +38,12 @@
  	<!--// 수동 Xstream 설정 끝 -->	
  	
  	<!-- Service 등록 -->
+ 	<bean id="svnRepoAnalysisServiceImpl" class="org.flyJenkins.analysis.service.SvnRepoAnalysisServiceImpl" />
+  	
+ 	<bean id="gitRepoAnalysisServiceImpl" class="org.flyJenkins.analysis.service.GitRepoAnalysisServiceImpl" />
+ 	
+ 	<bean id="fileAnalysisServiceImpl" class="org.flyJenkins.analysis.service.FileAnalysisServiceImpl" />	
+
  	<bean id="gitHubRepoManagerImpl" class="org.flyJenkins.github.service.GitHubRepoManagerImpl" />
  		
 </beans>
