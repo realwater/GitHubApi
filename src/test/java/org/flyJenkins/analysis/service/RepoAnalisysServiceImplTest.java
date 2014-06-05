@@ -6,6 +6,7 @@ import java.util.List;
 import org.flyJenkins.analysis.model.FileAnalysisDto;
 import org.flyJenkins.analysis.model.RepoAnalysisDto;
 import org.flyJenkins.analysis.service.FileAnalysisService;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ public class RepoAnalisysServiceImplTest {
 	@Autowired
 	private FileAnalysisService fileAnalysisServiceImpl;
 
+	@Ignore
 	@Test
 	public void svnRepoAnalysisStartTest() {
 		RepoAnalysisDto repoAnalysisDto = new RepoAnalysisDto();

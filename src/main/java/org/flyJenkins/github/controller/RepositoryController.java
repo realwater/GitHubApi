@@ -53,17 +53,31 @@ public class RepositoryController {
 			HttpServletRequest request,
 			ModelMap mode) {
 		
-		ProjectDto projectDto = (ProjectDto) redisCacheManagerImpl.getCacheValue(owner+"_"+repo);
+		GitHubRepoCmd gitHubRepoCmd= new GitHubRepoCmd();
+		gitHubRepoCmd.setOwner(owner);
+		gitHubRepoCmd.setRepo(repo);
 		
-		if (projectDto == null) {
+		// Cache Data 조회
+		ProjectDto projectDto = (ProjectDto) redisCacheManagerImpl.getCacheValue(owner+"_"+repo);
+		Boolean isSync = false;
+
+		// commit 최신 정보와 cache commit 최신 정보가 다를 경우 재 동기화 한다.
+		if (projectDto != null) {
+			isSync = true;
+			List<CommitDto> commitDtoList = gitHubRepoManager.getProjectCommitInfo(gitHubRepoCmd);
+			if (!commitDtoList.isEmpty()) {
+				if (!projectDto.getCommitSha().equals(commitDtoList.get(0).getSha())) {
+					isSync = false;
+				}
+			}
+		}
+		
+		// Data Analysis 및 Cache 동기화
+		if (isSync == false) {
 			projectDto = new ProjectDto();
 			projectDto.setProjectName(repo);
 
 			// 1. 프로젝트 정보 조회
-			GitHubRepoCmd gitHubRepoCmd= new GitHubRepoCmd();
-			gitHubRepoCmd.setOwner(owner);
-			gitHubRepoCmd.setRepo(repo);
-
 			ReposDto reposDto = gitHubRepoManager.getProjectInfo(gitHubRepoCmd);
 
 			// 2. 프로젝트 내 타입 조회
@@ -107,7 +121,7 @@ public class RepositoryController {
 				List<CommitDto> commitDtoList = gitHubRepoManager.getProjectCommitInfo(gitHubRepoCmd);
 				if (!commitDtoList.isEmpty()) {
 					projectDto.setCommitSha(commitDtoList.get(0).getSha());
-				}
+				}				
 			}
 			
 			/**
@@ -118,7 +132,6 @@ public class RepositoryController {
 			redisCacheDto.setValue(projectDto);
 			redisCacheDto.setExpireTime(1800);
 			redisCacheManagerImpl.saveCacheValue(redisCacheDto);
-			System.out.println("캐쉬 안탐");
 		}
 		
 		mode.clear();

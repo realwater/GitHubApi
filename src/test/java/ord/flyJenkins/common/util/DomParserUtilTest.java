@@ -144,7 +144,7 @@ public class DomParserUtilTest {
 	 * @throws SVNException
 	 */
 	@Test
-	//@Ignore
+	@Ignore
 	public void testWebParsing() throws SVNException {
 		SVNURL svnUrl = SVNURL.parseURIEncoded("https://github.com/realwater/GitHubApi");
 		SVNRepository repository = SVNRepositoryFactory.create(svnUrl, null);

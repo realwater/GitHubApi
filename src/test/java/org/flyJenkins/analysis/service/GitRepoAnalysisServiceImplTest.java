@@ -46,6 +46,7 @@ public class GitRepoAnalysisServiceImplTest {
 		}
 	}
 	
+	@Ignore
 	@Test
 	public void encodeTest() {
 		
