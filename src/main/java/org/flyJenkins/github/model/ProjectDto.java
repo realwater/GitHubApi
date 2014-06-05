@@ -1,12 +1,19 @@
 package org.flyJenkins.github.model;
 
+import java.io.Serializable;
+
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @XStreamAlias("project")
-public class ProjectDto {
+public class ProjectDto implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4369623234713558093L;
 
 	private String projectName;
 

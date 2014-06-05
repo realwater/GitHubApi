@@ -1,6 +1,10 @@
-package org.flyJenkins.cache.model;
+package org.flyJenkins.cache.redis.model;
 
-public class RedisCacheDto {
+import java.io.Serializable;
+
+public class RedisCacheDto implements Serializable {
+
+	private static final long serialVersionUID = -8632784181851704124L;
 
 	private String channelKey;
 	

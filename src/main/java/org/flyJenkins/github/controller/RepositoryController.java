@@ -4,6 +4,9 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.flyJenkins.cache.redis.model.RedisCacheDto;
+import org.flyJenkins.cache.redis.service.RedisCacheManager;
+import org.flyJenkins.cache.redis.service.RedisCacheManagerImpl;
 import org.flyJenkins.github.command.GitHubRepoCmd;
 import org.flyJenkins.github.model.CommitDto;
 import org.flyJenkins.github.model.ProjectDto;
@@ -34,6 +37,9 @@ public class RepositoryController {
 
 	@Autowired
 	private XStream xstreamManager;
+	
+	@Autowired
+	private RedisCacheManager redisCacheManagerImpl;
 
 	/**
 	 * GIT 저장소 분석
@@ -46,61 +52,75 @@ public class RepositoryController {
 			@PathVariable("repo") String repo,
 			HttpServletRequest request,
 			ModelMap mode) {
+		
+		ProjectDto projectDto = (ProjectDto) redisCacheManagerImpl.getCacheValue(owner+"_"+repo);
+		
+		if (projectDto == null) {
+			projectDto = new ProjectDto();
+			projectDto.setProjectName(repo);
 
-		ProjectDto projectDto = new ProjectDto();
-		projectDto.setProjectName(repo);
+			// 1. 프로젝트 정보 조회
+			GitHubRepoCmd gitHubRepoCmd= new GitHubRepoCmd();
+			gitHubRepoCmd.setOwner(owner);
+			gitHubRepoCmd.setRepo(repo);
 
-		// 1. 프로젝트 정보 조회
-		GitHubRepoCmd gitHubRepoCmd= new GitHubRepoCmd();
-		gitHubRepoCmd.setOwner(owner);
-		gitHubRepoCmd.setRepo(repo);
+			ReposDto reposDto = gitHubRepoManager.getProjectInfo(gitHubRepoCmd);
 
-		ReposDto reposDto = gitHubRepoManager.getProjectInfo(gitHubRepoCmd);
+			// 2. 프로젝트 내 타입 조회
+			if (!reposDto.getName().equals(null)) {
+				String projectLanguage = reposDto.getLanguage().toUpperCase();
+				projectDto.setLanguage(projectLanguage);
 
-		// 2. 프로젝트 내 타입 조회
-		if (!reposDto.getName().equals(null)) {
-			String projectLanguage = reposDto.getLanguage().toUpperCase();
-			projectDto.setLanguage(projectLanguage);
-
-			SearchCodeDto searchCodeDto = null;
-			if (projectLanguage.equals("JAVA")) {
-				gitHubRepoCmd.setQuery("pom");
-				gitHubRepoCmd.setLanguage("xml");
-
-				// Project가 메이븐인지 체크
-				searchCodeDto = gitHubRepoManager.getSearchFileCode(gitHubRepoCmd);
-				if (searchCodeDto.getTotal_count() > 0) {
-					projectDto.setAnalysisChance("Y");
-					projectDto.setBuildType("maven");
-
-					// Project가 Spring 인지 체크
-					gitHubRepoCmd.setQuery("application");
+				SearchCodeDto searchCodeDto = null;
+				if (projectLanguage.equals("JAVA")) {
+					gitHubRepoCmd.setQuery("pom");
 					gitHubRepoCmd.setLanguage("xml");
+
+					// Project가 메이븐인지 체크
+					searchCodeDto = gitHubRepoManager.getSearchFileCode(gitHubRepoCmd);
+					if (searchCodeDto.getTotal_count() > 0) {
+						projectDto.setAnalysisChance("Y");
+						projectDto.setBuildType("maven");
+
+						// Project가 Spring 인지 체크
+						gitHubRepoCmd.setQuery("application");
+						gitHubRepoCmd.setLanguage("xml");
+
+						searchCodeDto = gitHubRepoManager.getSearchFileCode(gitHubRepoCmd);
+						if (searchCodeDto.getTotal_count() > 0) {
+							projectDto.setProjectType("spring");
+						}
+					}
+				} else if (projectLanguage.equals("JAVASCRIPT")) {
+					// Project가 node.js 인지 체크
+					gitHubRepoCmd.setQuery("version");
+					gitHubRepoCmd.setLanguage("json");
 
 					searchCodeDto = gitHubRepoManager.getSearchFileCode(gitHubRepoCmd);
 					if (searchCodeDto.getTotal_count() > 0) {
-						projectDto.setProjectType("spring");
+						projectDto.setAnalysisChance("Y");
+						projectDto.setProjectType("node.js");
 					}
 				}
-			} else if (projectLanguage.equals("JAVASCRIPT")) {
-				// Project가 node.js 인지 체크
-				gitHubRepoCmd.setQuery("version");
-				gitHubRepoCmd.setLanguage("json");
 
-				searchCodeDto = gitHubRepoManager.getSearchFileCode(gitHubRepoCmd);
-				if (searchCodeDto.getTotal_count() > 0) {
-					projectDto.setAnalysisChance("Y");
-					projectDto.setProjectType("node.js");
+				// 최신 리비전 sha 정보가 있으면 저장한다.
+				List<CommitDto> commitDtoList = gitHubRepoManager.getProjectCommitInfo(gitHubRepoCmd);
+				if (!commitDtoList.isEmpty()) {
+					projectDto.setCommitSha(commitDtoList.get(0).getSha());
 				}
 			}
-
-			// 최신 리비전 sha 정보가 있으면 저장한다.
-			List<CommitDto> commitDtoList = gitHubRepoManager.getProjectCommitInfo(gitHubRepoCmd);
-			if (!commitDtoList.isEmpty()) {
-				projectDto.setCommitSha(commitDtoList.get(0).getSha());
-			}
+			
+			/**
+			 * 캐쉬 데이터 저장
+			 */
+			RedisCacheDto redisCacheDto = new RedisCacheDto(); 
+			redisCacheDto.setChannelKey(owner+"_"+repo);
+			redisCacheDto.setValue(projectDto);
+			redisCacheDto.setExpireTime(1800);
+			redisCacheManagerImpl.saveCacheValue(redisCacheDto);
+			System.out.println("캐쉬 안탐");
 		}
-
+		
 		mode.clear();
 		mode.addAttribute("projectDto", projectDto);
 	}
