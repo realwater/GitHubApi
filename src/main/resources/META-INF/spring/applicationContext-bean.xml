@@ -41,15 +41,9 @@
  	<bean id="redisCacheDao" class="org.flyJenkins.cache.redis.RedisCacheDao" />
  	
  	<!-- Service 등록 -->
- 	<bean id="svnRepoAnalysisServiceImpl" class="org.flyJenkins.analysis.service.SvnRepoAnalysisServiceImpl" />
-  	
- 	<bean id="gitRepoAnalysisServiceImpl" class="org.flyJenkins.analysis.service.GitRepoAnalysisServiceImpl" />
+ 	<bean id="gitHubRepoManager" class="org.flyJenkins.github.service.GitHubRepoManagerImpl" />
  	
- 	<bean id="fileAnalysisServiceImpl" class="org.flyJenkins.analysis.service.FileAnalysisServiceImpl" />	
-
- 	<bean id="gitHubRepoManagerImpl" class="org.flyJenkins.github.service.GitHubRepoManagerImpl" />
- 	
- 	<bean id="redisCacheManagerImpl" class="org.flyJenkins.cache.redis.service.RedisCacheManagerImpl" >
+ 	<bean id="redisCacheManager" class="org.flyJenkins.cache.redis.service.RedisCacheManagerImpl" >
  		<property name="redisCacheDao" ref="redisCacheDao"></property>
  	</bean>
  		

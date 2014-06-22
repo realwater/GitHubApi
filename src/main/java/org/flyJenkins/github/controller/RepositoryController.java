@@ -4,14 +4,13 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.flyJenkins.analysis.strategy.ProjectAnalysisStrategy;
 import org.flyJenkins.cache.redis.model.RedisCacheDto;
 import org.flyJenkins.cache.redis.service.RedisCacheManager;
-import org.flyJenkins.cache.redis.service.RedisCacheManagerImpl;
 import org.flyJenkins.github.command.GitHubRepoCmd;
 import org.flyJenkins.github.model.CommitDto;
 import org.flyJenkins.github.model.ProjectDto;
 import org.flyJenkins.github.model.ReposDto;
-import org.flyJenkins.github.model.SearchCodeDto;
 import org.flyJenkins.github.service.GitHubRepoManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -53,17 +52,17 @@ public class RepositoryController {
 			HttpServletRequest request,
 			ModelMap mode) {
 		
-		GitHubRepoCmd gitHubRepoCmd= new GitHubRepoCmd();
+		GitHubRepoCmd gitHubRepoCmd = new GitHubRepoCmd();
 		gitHubRepoCmd.setOwner(owner);
 		gitHubRepoCmd.setRepo(repo);
 		
 		// Cache Data 조회
-		ProjectDto projectDto = (ProjectDto) redisCacheManagerImpl.getCacheValue(owner+"_"+repo);
+		ProjectDto projectDto = (ProjectDto) redisCacheManagerImpl.getCacheValue(owner+"_"+repo+"_analysis");
 		Boolean isSync = false;
 
 		// commit 최신 정보와 cache commit 최신 정보가 다를 경우 재 동기화 한다.
 		if (projectDto != null) {
-			isSync = true;
+			//isSync = true;
 			List<CommitDto> commitDtoList = gitHubRepoManager.getProjectCommitInfo(gitHubRepoCmd);
 			if (!commitDtoList.isEmpty()) {
 				if (!projectDto.getCommitSha().equals(commitDtoList.get(0).getSha())) {
@@ -81,39 +80,28 @@ public class RepositoryController {
 			ReposDto reposDto = gitHubRepoManager.getProjectInfo(gitHubRepoCmd);
 
 			// 2. 프로젝트 내 타입 조회
-			if (!reposDto.getName().equals(null)) {
+			if (reposDto != null) {
 				String projectLanguage = reposDto.getLanguage().toUpperCase();
 				projectDto.setLanguage(projectLanguage);
-
-				SearchCodeDto searchCodeDto = null;
-				if (projectLanguage.equals("JAVA")) {
-					gitHubRepoCmd.setQuery("pom");
-					gitHubRepoCmd.setLanguage("xml");
-
-					// Project가 메이븐인지 체크
-					searchCodeDto = gitHubRepoManager.getSearchFileCode(gitHubRepoCmd);
-					if (searchCodeDto.getTotal_count() > 0) {
-						projectDto.setAnalysisChance("Y");
-						projectDto.setBuildType("maven");
-
-						// Project가 Spring 인지 체크
-						gitHubRepoCmd.setQuery("application");
-						gitHubRepoCmd.setLanguage("xml");
-
-						searchCodeDto = gitHubRepoManager.getSearchFileCode(gitHubRepoCmd);
-						if (searchCodeDto.getTotal_count() > 0) {
-							projectDto.setProjectType("spring");
-						}
-					}
-				} else if (projectLanguage.equals("JAVASCRIPT")) {
-					// Project가 node.js 인지 체크
-					gitHubRepoCmd.setQuery("version");
-					gitHubRepoCmd.setLanguage("json");
-
-					searchCodeDto = gitHubRepoManager.getSearchFileCode(gitHubRepoCmd);
-					if (searchCodeDto.getTotal_count() > 0) {
-						projectDto.setAnalysisChance("Y");
-						projectDto.setProjectType("node.js");
+				
+				StringBuffer sbFileClassName = new StringBuffer();
+				sbFileClassName.append("org.flyJenkins.analysis.strategy.");
+				sbFileClassName.append(projectLanguage);
+				sbFileClassName.append("AnalysisStrategy");
+				
+				String strategyClassName = sbFileClassName.toString();
+				
+				// 맞는 분석 클래스가 있을 경우 분석 처리
+				if (!strategyClassName.isEmpty()) {
+					Class<?> strategyClass;
+					try {
+						strategyClass = Class.forName(strategyClassName);
+						ProjectAnalysisStrategy projectAnalysisStrategy = (ProjectAnalysisStrategy) strategyClass.newInstance();
+						// call by reference로 projectDto 정보 생성
+						projectAnalysisStrategy.setGitHubRepoManager(gitHubRepoManager);
+						projectAnalysisStrategy.getGitAnalysisInfo(gitHubRepoCmd, projectDto);
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
 				}
 
@@ -128,7 +116,7 @@ public class RepositoryController {
 			 * 캐쉬 데이터 저장
 			 */
 			RedisCacheDto redisCacheDto = new RedisCacheDto(); 
-			redisCacheDto.setChannelKey(owner+"_"+repo);
+			redisCacheDto.setChannelKey(owner+"_"+repo+"_analysis");
 			redisCacheDto.setValue(projectDto);
 			redisCacheDto.setExpireTime(1800);
 			redisCacheManagerImpl.saveCacheValue(redisCacheDto);
