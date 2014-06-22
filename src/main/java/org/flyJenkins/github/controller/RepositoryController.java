@@ -6,13 +6,14 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.flyJenkins.cache.redis.model.RedisCacheDto;
 import org.flyJenkins.cache.redis.service.RedisCacheManager;
-import org.flyJenkins.github.analysis.strategy.GitHubAnalysisStrategy;
 import org.flyJenkins.github.command.GitHubRepoCmd;
 import org.flyJenkins.github.model.CommitDto;
 import org.flyJenkins.github.model.ProjectDto;
 import org.flyJenkins.github.model.ReposDto;
 import org.flyJenkins.github.service.GitHubRepoManager;
+import org.flyJenkins.github.strategy.GitHubAnalysisStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,6 +40,9 @@ public class RepositoryController {
 	
 	@Autowired
 	private RedisCacheManager redisCacheManagerImpl;
+	
+	@Value("#{github['github.strategy.package']}")
+	private String gitStrategyPackage;
 
 	/**
 	 * GIT 저장소 분석
@@ -62,7 +66,7 @@ public class RepositoryController {
 
 		// commit 최신 정보와 cache commit 최신 정보가 다를 경우 재 동기화 한다.
 		if (projectDto != null) {
-			//isSync = true;
+			isSync = true;
 			List<CommitDto> commitDtoList = gitHubRepoManager.getProjectCommitInfo(gitHubRepoCmd);
 			if (!commitDtoList.isEmpty()) {
 				if (!projectDto.getCommitSha().equals(commitDtoList.get(0).getSha())) {
@@ -85,7 +89,7 @@ public class RepositoryController {
 				projectDto.setLanguage(projectLanguage);
 				
 				StringBuffer sbFileClassName = new StringBuffer();
-				sbFileClassName.append("org.flyJenkins.github.analysis.strategy.");
+				sbFileClassName.append(gitStrategyPackage);
 				sbFileClassName.append(projectLanguage);
 				sbFileClassName.append("AnalysisStrategy");
 				

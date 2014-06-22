@@ -1,4 +1,4 @@
-package org.flyJenkins.github.analysis.strategy;
+package org.flyJenkins.github.strategy;
 
 import org.flyJenkins.github.command.GitHubRepoCmd;
 import org.flyJenkins.github.model.ProjectDto;
