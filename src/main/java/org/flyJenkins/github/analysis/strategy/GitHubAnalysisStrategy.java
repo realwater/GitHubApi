@@ -1,10 +1,10 @@
-package org.flyJenkins.analysis.strategy;
+package org.flyJenkins.github.analysis.strategy;
 
 import org.flyJenkins.github.command.GitHubRepoCmd;
 import org.flyJenkins.github.model.ProjectDto;
 import org.flyJenkins.github.service.GitHubRepoManager;
 
-public interface ProjectAnalysisStrategy {
+public interface GitHubAnalysisStrategy {
 	
 	public void setGitHubRepoManager(GitHubRepoManager gitHubRepoManager);
 

@@ -1,11 +1,11 @@
-package org.flyJenkins.analysis.strategy;
+package org.flyJenkins.github.analysis.strategy;
 
 import org.flyJenkins.github.command.GitHubRepoCmd;
 import org.flyJenkins.github.model.ProjectDto;
 import org.flyJenkins.github.model.SearchCodeDto;
 import org.flyJenkins.github.service.GitHubRepoManager;
 
-public class JAVAAnalysisStrategy implements ProjectAnalysisStrategy {
+public class JAVAAnalysisStrategy implements GitHubAnalysisStrategy {
 	
 	private GitHubRepoManager gitHubRepoManager;
 	

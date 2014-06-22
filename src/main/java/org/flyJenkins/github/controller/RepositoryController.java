@@ -4,9 +4,9 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.flyJenkins.analysis.strategy.ProjectAnalysisStrategy;
 import org.flyJenkins.cache.redis.model.RedisCacheDto;
 import org.flyJenkins.cache.redis.service.RedisCacheManager;
+import org.flyJenkins.github.analysis.strategy.GitHubAnalysisStrategy;
 import org.flyJenkins.github.command.GitHubRepoCmd;
 import org.flyJenkins.github.model.CommitDto;
 import org.flyJenkins.github.model.ProjectDto;
@@ -85,7 +85,7 @@ public class RepositoryController {
 				projectDto.setLanguage(projectLanguage);
 				
 				StringBuffer sbFileClassName = new StringBuffer();
-				sbFileClassName.append("org.flyJenkins.analysis.strategy.");
+				sbFileClassName.append("org.flyJenkins.github.analysis.strategy.");
 				sbFileClassName.append(projectLanguage);
 				sbFileClassName.append("AnalysisStrategy");
 				
@@ -96,10 +96,10 @@ public class RepositoryController {
 					Class<?> strategyClass;
 					try {
 						strategyClass = Class.forName(strategyClassName);
-						ProjectAnalysisStrategy projectAnalysisStrategy = (ProjectAnalysisStrategy) strategyClass.newInstance();
+						GitHubAnalysisStrategy gitHubAnalysisStrategy = (GitHubAnalysisStrategy) strategyClass.newInstance();
 						// call by reference로 projectDto 정보 생성
-						projectAnalysisStrategy.setGitHubRepoManager(gitHubRepoManager);
-						projectAnalysisStrategy.getGitAnalysisInfo(gitHubRepoCmd, projectDto);
+						gitHubAnalysisStrategy.setGitHubRepoManager(gitHubRepoManager);
+						gitHubAnalysisStrategy.getGitAnalysisInfo(gitHubRepoCmd, projectDto);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
