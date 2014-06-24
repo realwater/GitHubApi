@@ -43,6 +43,9 @@ public class RepositoryController {
 	
 	@Value("#{github['github.strategy.package']}")
 	private String gitStrategyPackage;
+	
+	@Value("#{github['api.url']}")
+	private String gitApiUrl;
 
 	/**
 	 * GIT 저장소 분석
@@ -55,14 +58,15 @@ public class RepositoryController {
 			@PathVariable("repo") String repo,
 			HttpServletRequest request,
 			ModelMap mode) {
+
+		String cacheKey = owner+"_"+repo+"_analysis";
+		// Cache Data 조회
+		ProjectDto projectDto = (ProjectDto) redisCacheManagerImpl.getCacheValue(cacheKey);
+		Boolean isSync = false;
 		
 		GitHubRepoCmd gitHubRepoCmd = new GitHubRepoCmd();
 		gitHubRepoCmd.setOwner(owner);
 		gitHubRepoCmd.setRepo(repo);
-		
-		// Cache Data 조회
-		ProjectDto projectDto = (ProjectDto) redisCacheManagerImpl.getCacheValue(owner+"_"+repo+"_analysis");
-		Boolean isSync = false;
 
 		// commit 최신 정보와 cache commit 최신 정보가 다를 경우 재 동기화 한다.
 		if (projectDto != null) {
@@ -120,7 +124,7 @@ public class RepositoryController {
 			 * 캐쉬 데이터 저장
 			 */
 			RedisCacheDto redisCacheDto = new RedisCacheDto(); 
-			redisCacheDto.setChannelKey(owner+"_"+repo+"_analysis");
+			redisCacheDto.setChannelKey(cacheKey);
 			redisCacheDto.setValue(projectDto);
 			redisCacheDto.setExpireTime(1800);
 			redisCacheManagerImpl.saveCacheValue(redisCacheDto);
@@ -145,25 +149,40 @@ public class RepositoryController {
 			ModelMap model) {
 
 		String requestPath = request.getRequestURI();
-		String url = "https://api.github.com"+requestPath;
-		String resultJson = null;
+		String cacheKey = owner+"/"+repo+requestPath;
+		
+		// Cache Data 조회
+		String resultJson = (String) redisCacheManagerImpl.getCacheValue(cacheKey);
+		
+		if (resultJson == null) {
+			String url = gitApiUrl+requestPath;
+			
+			ReposDto repos = new ReposDto();
+			ReposDto[] reposList = {};
 
-		ReposDto repos = new ReposDto();
-		ReposDto[] reposList = {};
-
-		try {
-			// 확장자가 있으면 Object로 호출
-			if (requestPath.indexOf('.') > 0) {
-				xstreamManager.alias("repos", ReposDto.class);
-				repos = restTemplate.getForObject(url, ReposDto.class);
-				resultJson = xstreamManager.toXML(repos);
-			} else { // 확장자가 있으면 Object로 호출
-				xstreamManager.alias("repos", ReposDto[].class);
-				reposList = restTemplate.getForObject(url, ReposDto[].class);
-				resultJson = xstreamManager.toXML(reposList);
+			try {
+				// 확장자가 있으면 Object로 호출
+				if (requestPath.indexOf('.') > 0) {
+					xstreamManager.alias("repos", ReposDto.class);
+					repos = restTemplate.getForObject(url, ReposDto.class);
+					resultJson = xstreamManager.toXML(repos);
+				} else { // 확장자가 있으면 Object로 호출
+					xstreamManager.alias("repos", ReposDto[].class);
+					reposList = restTemplate.getForObject(url, ReposDto[].class);
+					resultJson = xstreamManager.toXML(reposList);
+				}
+			} catch (final HttpClientErrorException e) {
+			    resultJson = e.getResponseBodyAsString();
 			}
-		} catch (final HttpClientErrorException e) {
-		    resultJson = e.getResponseBodyAsString();
+			
+			/**
+			 * 캐쉬 데이터 저장
+			 */
+			RedisCacheDto redisCacheDto = new RedisCacheDto(); 
+			redisCacheDto.setChannelKey(cacheKey);
+			redisCacheDto.setValue(resultJson);
+			redisCacheDto.setExpireTime(1800);
+			redisCacheManagerImpl.saveCacheValue(redisCacheDto);
 		}
 
 		return resultJson;
