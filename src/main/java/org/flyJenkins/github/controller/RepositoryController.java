@@ -7,13 +7,13 @@ import javax.servlet.http.HttpServletRequest;
 import org.flyJenkins.cache.redis.model.RedisCacheDto;
 import org.flyJenkins.cache.redis.service.RedisCacheManager;
 import org.flyJenkins.github.command.GitHubRepoCmd;
-import org.flyJenkins.github.define.GitHubDefine;
 import org.flyJenkins.github.model.CommitDto;
 import org.flyJenkins.github.model.ProjectDto;
 import org.flyJenkins.github.model.ReposDto;
 import org.flyJenkins.github.service.GitHubRepoManager;
 import org.flyJenkins.github.strategy.GitHubAnalysisStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,6 +40,15 @@ public class RepositoryController {
 	
 	@Autowired
 	private RedisCacheManager redisCacheManagerImpl;
+	
+	@Value("#{github['api.url']}")
+	public String GIT_API_URL;
+	
+	@Value("#{github['github.strategy.package']}")
+	public String GIT_STRATEGY_PACKAGE;
+	
+	@Value("#{github['github.strategy.name']}")
+	public String GIT_STRATEGY_NAME;
 	
 	/**
 	 * GIT 저장소 분석
@@ -76,9 +85,9 @@ public class RepositoryController {
 				projectDto.setLanguage(projectLanguage);
 				
 				StringBuffer sbFileClassName = new StringBuffer();
-				sbFileClassName.append(GitHubDefine.GIT_STRATEGY_PACKAGE);
+				sbFileClassName.append(this.GIT_STRATEGY_PACKAGE);
 				sbFileClassName.append(projectLanguage);
-				sbFileClassName.append(GitHubDefine.GIT_STRATEGY_NAME);
+				sbFileClassName.append(this.GIT_STRATEGY_NAME);
 				
 				String strategyClassName = sbFileClassName.toString();
 				
@@ -137,7 +146,7 @@ public class RepositoryController {
 		String resultJson = (String) redisCacheManagerImpl.getCacheValue(cacheKey);
 		
 		if (resultJson == null) {
-			String url = GitHubDefine.GIT_API_URL+requestPath;
+			String url = this.GIT_API_URL+requestPath;
 			
 			ReposDto repos = new ReposDto();
 			ReposDto[] reposList = {};

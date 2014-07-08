@@ -17,6 +17,8 @@
  	http://www.springframework.org/schema/util
  	http://www.springframework.org/schema/util/spring-util-3.1.xsd">
 	
+	<util:properties id="github" location="classpath:/META-INF/properties/github.xml" />
+	
 	<!-- jedis Connection Setting -->     
 	<bean id="jdkSerialization" class="org.springframework.data.redis.serializer.JdkSerializationRedisSerializer" />
   	<bean id="jedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
