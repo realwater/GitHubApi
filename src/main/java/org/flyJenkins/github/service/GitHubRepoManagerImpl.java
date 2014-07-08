@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.flyJenkins.github.command.GitHubRepoCmd;
+import org.flyJenkins.github.define.GitHubDefine;
 import org.flyJenkins.github.model.CommitDto;
 import org.flyJenkins.github.model.ReposDto;
 import org.flyJenkins.github.model.SearchCodeDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
@@ -19,12 +19,6 @@ public class GitHubRepoManagerImpl implements GitHubRepoManager {
 	@Autowired
 	private RestTemplate restTemplate;
 	
-	@Value("#{github['api.repos.url']}")
-	private String gitApiReposUrl;
-	
-	@Value("#{github['api.search.url']}")
-	private String gitApiSearchUrl;
-	
 	/**
 	 * 프로젝트 정보 조회
 	 * @param gitHubRepoCmd
@@ -33,7 +27,7 @@ public class GitHubRepoManagerImpl implements GitHubRepoManager {
 	@Override
 	public ReposDto getProjectInfo(GitHubRepoCmd gitHubRepoCmd) {
 		StringBuffer sbApiUrl = new StringBuffer();
-		sbApiUrl.append(gitApiReposUrl);
+		sbApiUrl.append(GitHubDefine.GIT_API_REPOS_URL);
 		sbApiUrl.append("/"+gitHubRepoCmd.getOwner());
 		sbApiUrl.append("/"+gitHubRepoCmd.getRepo());
 		
@@ -56,7 +50,7 @@ public class GitHubRepoManagerImpl implements GitHubRepoManager {
 	@Override
 	public SearchCodeDto getSearchFileCode(GitHubRepoCmd gitHubRepoCmd) {
 		StringBuffer sbApiUrl = new StringBuffer();
-		sbApiUrl.append(gitApiSearchUrl);
+		sbApiUrl.append(GitHubDefine.GIT_API_SEARCH_URL);
 		sbApiUrl.append("/code");
 		sbApiUrl.append("?q="+gitHubRepoCmd.getQuery());
 		sbApiUrl.append(" in:file");
@@ -83,7 +77,7 @@ public class GitHubRepoManagerImpl implements GitHubRepoManager {
 	@Override
 	public List<CommitDto> getProjectCommitInfo(GitHubRepoCmd gitHubRepoCmd) {
 		StringBuffer sbApiUrl = new StringBuffer();
-		sbApiUrl.append(gitApiReposUrl);
+		sbApiUrl.append(GitHubDefine.GIT_API_REPOS_URL);
 		sbApiUrl.append("/"+gitHubRepoCmd.getOwner());
 		sbApiUrl.append("/"+gitHubRepoCmd.getRepo());
 		sbApiUrl.append("/commits");

@@ -16,4 +16,10 @@ public interface RedisCacheManager {
 	 * @return
 	 */
 	public Object getCacheValue(String key);
+	
+	/**
+	 * Cache Data 삭제
+	 * @param key
+	 */
+	public void deleteCacheValue(String key);
 }

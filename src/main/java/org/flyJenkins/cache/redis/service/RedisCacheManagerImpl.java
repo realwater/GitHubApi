@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 import org.flyJenkins.cache.redis.RedisCacheDao;
 import org.flyJenkins.cache.redis.model.RedisCacheDto;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class RedisCacheManagerImpl implements RedisCacheManager {
 	
@@ -36,6 +35,14 @@ public class RedisCacheManagerImpl implements RedisCacheManager {
 	@Override
 	public Object getCacheValue(String key) {
 		return redisCacheDao.getValue(key);
+	}
+
+	/**
+	 * Cache Data 삭제
+	 */
+	@Override
+	public void deleteCacheValue(String key) {
+		redisCacheDao.delKey(key);
 	}
 
 }

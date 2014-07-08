@@ -38,7 +38,9 @@
  	<!--// 수동 Xstream 설정 끝 -->	
  	
  	<!-- Dao 등록 -->
- 	<bean id="redisCacheDao" class="org.flyJenkins.cache.redis.RedisCacheDao" />
+ 	<bean id="redisCacheDao" class="org.flyJenkins.cache.redis.RedisCacheDao">
+ 		<property name="redisTemplate" ref="redisTemplate"></property>
+ 	</bean>
  	
  	<!-- Service 등록 -->
  	<bean id="gitHubRepoManager" class="org.flyJenkins.github.service.GitHubRepoManagerImpl" />

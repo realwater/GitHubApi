@@ -3,24 +3,40 @@ package org.flyJenkins.cache.redis;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.annotation.PostConstruct;
+
 import org.flyJenkins.cache.DataCache;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 
 public class RedisCacheDao implements DataCache {
-
-	@Autowired
+	
     private RedisTemplate<Serializable, Serializable> redisTemplate;
+    
+    public void setRedisTemplate(RedisTemplate<Serializable, Serializable> redisTemplate) {
+		this.redisTemplate = redisTemplate;
+	}
+	
+	private boolean isCacheActive = false; // 캐쉬 활성화 여부
+	
+	@PostConstruct
+	public void setIsCacheActive() {
+		System.out.println(redisTemplate+"realwater");
+		if (redisTemplate != null) {
+			this.isCacheActive = true;
+		}
+	}
 	
 	/**
 	 *  redis 의 strings의 value 를 구함
 	 */
 	@Override
 	public <T extends Serializable> T getValue(Serializable key) {
-		@SuppressWarnings("unchecked")
-		ValueOperations<Serializable, T> valueOper =(ValueOperations<Serializable, T>)  redisTemplate.opsForValue();
-		T result = valueOper.get(key);
+		T result = null;
+		if (this.isCacheActive) {
+			ValueOperations<Serializable, T> valueOper =(ValueOperations<Serializable, T>)  redisTemplate.opsForValue();		
+			result = valueOper.get(key);
+		}
 		return result;
 	}
 	
@@ -32,8 +48,10 @@ public class RedisCacheDao implements DataCache {
 	 */
 	@Override
 	public void setValue(Serializable key, Serializable value) {
-		ValueOperations<Serializable, Serializable> valueOper = redisTemplate.opsForValue();
-		valueOper.set(key, value);
+		if (this.isCacheActive) {
+			ValueOperations<Serializable, Serializable> valueOper = redisTemplate.opsForValue();
+			valueOper.set(key, value);
+		}
 	}
 	
 	/**
@@ -41,7 +59,9 @@ public class RedisCacheDao implements DataCache {
 	 */
 	@Override
 	public void delKey(Serializable key) {
-		redisTemplate.delete(key);
+		if (this.isCacheActive) {
+			redisTemplate.delete(key);
+		}
 	}
 	
 	/**
@@ -49,9 +69,11 @@ public class RedisCacheDao implements DataCache {
 	 */
 	@Override
 	public void setExpire(Serializable key, long second) {
-		Date expireDate =  new Date();
-		long expireTime = expireDate.getTime() + 1000 * second;
-		expireDate.setTime(expireTime);
-		redisTemplate.expireAt(key, expireDate);
+		if (this.isCacheActive) {
+			Date expireDate =  new Date();
+			long expireTime = expireDate.getTime() + 1000 * second;
+			expireDate.setTime(expireTime);
+			redisTemplate.expireAt(key, expireDate);
+		}
 	}
 }

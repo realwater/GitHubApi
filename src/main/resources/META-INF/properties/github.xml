@@ -6,4 +6,5 @@
 	<entry key="api.repos.url">https://api.github.com/repos</entry>
 	<entry key="api.search.url">https://api.github.com/search</entry>
 	<entry key="github.strategy.package">org.flyJenkins.github.strategy.</entry>
+	<entry key="github.strategy.name">AnalysisStrategy</entry>
 </properties>

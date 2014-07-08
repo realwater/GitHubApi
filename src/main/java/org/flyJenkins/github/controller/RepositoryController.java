@@ -7,13 +7,13 @@ import javax.servlet.http.HttpServletRequest;
 import org.flyJenkins.cache.redis.model.RedisCacheDto;
 import org.flyJenkins.cache.redis.service.RedisCacheManager;
 import org.flyJenkins.github.command.GitHubRepoCmd;
+import org.flyJenkins.github.define.GitHubDefine;
 import org.flyJenkins.github.model.CommitDto;
 import org.flyJenkins.github.model.ProjectDto;
 import org.flyJenkins.github.model.ReposDto;
 import org.flyJenkins.github.service.GitHubRepoManager;
 import org.flyJenkins.github.strategy.GitHubAnalysisStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,12 +41,6 @@ public class RepositoryController {
 	@Autowired
 	private RedisCacheManager redisCacheManagerImpl;
 	
-	@Value("#{github['github.strategy.package']}")
-	private String gitStrategyPackage;
-	
-	@Value("#{github['api.url']}")
-	private String gitApiUrl;
-
 	/**
 	 * GIT 저장소 분석
 	 * 2014.05.11
@@ -60,42 +54,31 @@ public class RepositoryController {
 			ModelMap mode) {
 
 		String cacheKey = owner+"_"+repo+"_analysis";
+		
 		// Cache Data 조회
 		ProjectDto projectDto = (ProjectDto) redisCacheManagerImpl.getCacheValue(cacheKey);
-		Boolean isSync = false;
-		
-		GitHubRepoCmd gitHubRepoCmd = new GitHubRepoCmd();
-		gitHubRepoCmd.setOwner(owner);
-		gitHubRepoCmd.setRepo(repo);
 
-		// commit 최신 정보와 cache commit 최신 정보가 다를 경우 재 동기화 한다.
-		if (projectDto != null) {
-			isSync = true;
-			List<CommitDto> commitDtoList = gitHubRepoManager.getProjectCommitInfo(gitHubRepoCmd);
-			if (!commitDtoList.isEmpty()) {
-				if (!projectDto.getCommitSha().equals(commitDtoList.get(0).getSha())) {
-					isSync = false;
-				}
-			}
-		}
-		
 		// Data Analysis 및 Cache 동기화
-		if (isSync == false) {
-			projectDto = new ProjectDto();
-			projectDto.setProjectName(repo);
+		if (projectDto == null) {
+			GitHubRepoCmd gitHubRepoCmd = new GitHubRepoCmd();
+			gitHubRepoCmd.setOwner(owner);
+			gitHubRepoCmd.setRepo(repo);
 
 			// 1. 프로젝트 정보 조회
 			ReposDto reposDto = gitHubRepoManager.getProjectInfo(gitHubRepoCmd);
 
 			// 2. 프로젝트 내 타입 조회
 			if (reposDto != null) {
+				projectDto = new ProjectDto();
+				projectDto.setProjectName(repo);
+				
 				String projectLanguage = reposDto.getLanguage().toUpperCase();
 				projectDto.setLanguage(projectLanguage);
 				
 				StringBuffer sbFileClassName = new StringBuffer();
-				sbFileClassName.append(gitStrategyPackage);
+				sbFileClassName.append(GitHubDefine.GIT_STRATEGY_PACKAGE);
 				sbFileClassName.append(projectLanguage);
-				sbFileClassName.append("AnalysisStrategy");
+				sbFileClassName.append(GitHubDefine.GIT_STRATEGY_NAME);
 				
 				String strategyClassName = sbFileClassName.toString();
 				
@@ -117,23 +100,22 @@ public class RepositoryController {
 				List<CommitDto> commitDtoList = gitHubRepoManager.getProjectCommitInfo(gitHubRepoCmd);
 				if (!commitDtoList.isEmpty()) {
 					projectDto.setCommitSha(commitDtoList.get(0).getSha());
-				}				
+				}		
+				
+				/**
+				 * 캐쉬 데이터 저장
+				 */
+				RedisCacheDto redisCacheDto = new RedisCacheDto(); 
+				redisCacheDto.setChannelKey(cacheKey);
+				redisCacheDto.setValue(projectDto);
+				redisCacheDto.setExpireTime(1800);
+				redisCacheManagerImpl.saveCacheValue(redisCacheDto);
 			}
-			
-			/**
-			 * 캐쉬 데이터 저장
-			 */
-			RedisCacheDto redisCacheDto = new RedisCacheDto(); 
-			redisCacheDto.setChannelKey(cacheKey);
-			redisCacheDto.setValue(projectDto);
-			redisCacheDto.setExpireTime(1800);
-			redisCacheManagerImpl.saveCacheValue(redisCacheDto);
 		}
 		
 		mode.clear();
 		mode.addAttribute("projectDto", projectDto);
 	}
-
 
 	/**
 	 * 저장소 디렉토리 정보
@@ -155,7 +137,7 @@ public class RepositoryController {
 		String resultJson = (String) redisCacheManagerImpl.getCacheValue(cacheKey);
 		
 		if (resultJson == null) {
-			String url = gitApiUrl+requestPath;
+			String url = GitHubDefine.GIT_API_URL+requestPath;
 			
 			ReposDto repos = new ReposDto();
 			ReposDto[] reposList = {};
